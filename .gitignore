@@ -1,10 +1,15 @@
-﻿.venv/
+﻿# python virtualenv
+.venv/
 
+# python cache
 *.pyc
 __pycache__/
 
+# database
 instance/
+migrations/
 
+# pytest
 .pytest_cache/
 .coverage
 htmlcov/

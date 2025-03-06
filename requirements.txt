@@ -1,2 +1,6 @@
-﻿Flask
+﻿flask
+flask-sqlalchemy
+flask-migrate
+mysql
+
 pytest
