@@ -4,3 +4,5 @@ flask-migrate
 mysql
 
 pytest
+SQLAlchemy
+alembic
