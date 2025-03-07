@@ -1,8 +1,18 @@
-﻿flask
+﻿# flask
+flask
 flask-sqlalchemy
 flask-migrate
-mysql
 
-pytest
+# database
+mysql
 SQLAlchemy
 alembic
+
+# environment variables
+python-dotenv
+
+# docker
+docker
+
+# test
+pytest

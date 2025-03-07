@@ -3,14 +3,19 @@
     build: .
     ports:
       - "5000:5000"
-  db:
+    environment:
+      - MYSQL_HOST=db
+    links:
+      - mysql-db
+  mysql-db:
+    hostname: db
     container_name: mysql-db
     image: mysql:latest
     restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=mysql-db
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=password
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT}:3306"

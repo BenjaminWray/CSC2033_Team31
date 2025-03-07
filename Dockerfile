@@ -1,16 +1,25 @@
-﻿# Use python
+﻿# use python
 FROM python:latest
 
-# Install requirements
+# create working directory
+WORKDIR /app
+
+# install requirements
 ADD requirements.txt .
 RUN pip install -r requirements.txt
 
-# Create working directory
-WORKDIR /flaskr
+# add project files
+ADD flaskr flaskr
+ADD tests tests
+ADD .env .env
 
-# Add project files
-ADD flaskr .
+# set environment variables
+ENV PYTHONPATH="flaskr/"
+ENV FLASK_APP="flaskr/app.py"
 
-# Run flask application
+# create database migrations files
+RUN flask db init
+
+# run flask application
 EXPOSE 5000
 CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
