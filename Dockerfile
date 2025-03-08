@@ -11,7 +11,7 @@ RUN pip install -r requirements.txt
 # add project files
 ADD flaskr flaskr
 ADD tests tests
-ADD .env .env
+ADD .env .
 
 # set environment variables
 ENV PYTHONPATH="flaskr/"
@@ -20,6 +20,6 @@ ENV FLASK_APP="flaskr/app.py"
 # create database migrations files
 RUN flask db init
 
-# run flask application
-EXPOSE 5000
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+# execute startup shell script
+ADD start_container.sh .
+CMD ["/usr/bin/bash", "-c", "./start_container.sh"]
