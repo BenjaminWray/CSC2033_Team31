@@ -7,6 +7,7 @@ flask-migrate
 mysql
 SQLAlchemy
 alembic
+datetime
 
 # environment variables
 python-dotenv
