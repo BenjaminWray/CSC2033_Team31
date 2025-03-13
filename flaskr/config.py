@@ -33,7 +33,7 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     question_text = db.Column(db.Text, nullable=False)
     answer_text = db.Column(db.Text, nullable=False)
-    created = db.Column(db.Datetime, nullable=False)
+    created = db.Column(db.DateTime, nullable=False)
 
     def __init__(self, question_text, answer_text):
         self.question_text = question_text
