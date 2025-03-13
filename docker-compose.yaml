@@ -2,7 +2,11 @@
   web:
     build: .
     volumes:
-      - ./:/app
+      - ./flaskr:/app/flaskr
+      - ./tests:/app/tests
+      - ./requirements.txt:/app/requirements.txt
+      - ./.env:/app/.env
+      - ./start_container.sh:/app/start_container.sh
     ports:
       - "5000:5000"
     environment:
