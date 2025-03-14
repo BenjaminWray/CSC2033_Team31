@@ -17,3 +17,5 @@ docker
 
 # test
 pytest
+mysql-connector-python 
+pymysql 
