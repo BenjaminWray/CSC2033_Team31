@@ -43,3 +43,22 @@ class Question(db.Model):
     def update(self, new_question, new_answer):
         self.question_text = new_question
         self.answer_text = new_answer
+
+
+class User(db.Model):
+    __tablename__ = 'users'
+
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(100), nullable=False, unique=True)
+    password = db.Column(db.String(100), nullable=False)
+    firstname = db.Column(db.String(100), nullable=False)
+    lastname = db.Column(db.String(100), nullable=False)
+    role = db.Column(db.String(100), nullable=False, default='end_user')
+    time_joined = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, email, password, firstname, lastname):
+        self.email = email
+        self.password = password
+        self.firstname = firstname
+        self.lastname = lastname
+        self.time_joined = datetime.now()
