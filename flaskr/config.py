@@ -26,7 +26,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 
-# creating a question Class
+# configure a question Class
 class Question(db.Model):
     __tablename__ = 'questions'
 
@@ -45,6 +45,7 @@ class Question(db.Model):
         self.answer_text = new_answer
 
 
+#configure a user class
 class User(db.Model):
     __tablename__ = 'users'
 
@@ -62,3 +63,19 @@ class User(db.Model):
         self.firstname = firstname
         self.lastname = lastname
         self.time_joined = datetime.now()
+
+#configure a log class
+class Log(db.Model):
+    __tablename__ = 'logs'
+
+    user = db.relationship("User", back_populates="log")
+
+    id = db.Column(db.Integer, primary_key=True)
+    userid = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    registration = db.Column(db.DateTime, nullable=False)
+    latestlogin = db.Column(db.DateTime, default=None)
+    previouslogin = db.Column(db.DateTime, default=None)
+
+    def __init__(self, userid):
+        self.userid = userid
+        self.registration = datetime.now()
