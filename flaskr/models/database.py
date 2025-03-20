@@ -15,6 +15,10 @@ class User(db.Model):
     last_login = db.Column(db.DateTime, nullable=True, server_default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
     quizzes = db.relationship('QuizResult', backref='user', lazy=True)
 
+    def generate_log(self):
+        db.session.add(Log(self.id))
+        db.session.commit()
+
 class Question(db.Model):
     __tablename__ = 'questions'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -48,3 +52,19 @@ class Leaderboard(db.Model):
     quizzes_completed = db.Column(db.Integer, nullable=False, default=0)
     average_time = db.Column(db.Float, nullable=False, default=0)
     last_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+#configure a log class
+class Log(db.Model):
+    __tablename__ = 'logs'
+
+    user = db.relationship("User", back_populates="log")
+
+    id = db.Column(db.Integer, primary_key=True)
+    userid = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    registration = db.Column(db.DateTime, nullable=False)
+    latestlogin = db.Column(db.DateTime, default=None)
+    previouslogin = db.Column(db.DateTime, default=None)
+
+    def __init__(self, userid):
+        self.userid = userid
+        self.registration = datetime.now()
