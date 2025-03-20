@@ -64,6 +64,10 @@ class User(db.Model):
         self.lastname = lastname
         self.time_joined = datetime.now()
 
+    def generate_log(self):
+        db.session.add(Log(self.id))
+        db.session.commit()
+
 #configure a log class
 class Log(db.Model):
     __tablename__ = 'logs'
