@@ -1,21 +1,10 @@
-﻿# flask
-flask
-flask-sqlalchemy
-flask-migrate
-
-# database
-mysql
-SQLAlchemy
-alembic
-datetime
-
-# environment variables
-python-dotenv
-
-# docker
-docker
-
-# test
-pytest
-mysql-connector-python 
-pymysql 
+# flask 
+flask==3.1.0 
+flask-sqlalchemy==3.1.1 
+flask-migrate==4.1.0 
+# database 
+mysql-connector-python==8.2.0 
+pymysql==1.1.0 
+SQLAlchemy==2.0.25 
+# environment variables 
+python-dotenv==1.0.0 
