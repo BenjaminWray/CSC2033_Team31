@@ -1,7 +1,8 @@
 # flask 
 flask==3.1.0 
 flask-sqlalchemy==3.1.1 
-flask-migrate==4.1.0 
+flask-migrate==4.1.0
+flask-admin
 # database 
 mysql-connector-python==8.2.0 
 pymysql==1.1.0 
