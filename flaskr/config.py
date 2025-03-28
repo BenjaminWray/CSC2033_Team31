@@ -45,7 +45,7 @@ class Question(db.Model):
         self.answer_text = new_answer
 
 
-#configure a user class
+# configure a user class
 class User(db.Model):
     __tablename__ = 'users'
 
@@ -68,7 +68,7 @@ class User(db.Model):
         db.session.add(Log(self.id))
         db.session.commit()
 
-#configure a log class
+# configure a log class
 class Log(db.Model):
     __tablename__ = 'logs'
 

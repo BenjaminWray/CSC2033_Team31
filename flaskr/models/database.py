@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from flask_admin.contrib.sqla import ModelView
 
 db = SQLAlchemy()
 
@@ -53,18 +54,49 @@ class Leaderboard(db.Model):
     average_time = db.Column(db.Float, nullable=False, default=0)
     last_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-#configure a log class
+# configure a log class
 class Log(db.Model):
     __tablename__ = 'logs'
 
     user = db.relationship("User", back_populates="log")
 
     id = db.Column(db.Integer, primary_key=True)
-    userid = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     registration = db.Column(db.DateTime, nullable=False)
-    latestlogin = db.Column(db.DateTime, default=None)
-    previouslogin = db.Column(db.DateTime, default=None)
+    latest_login = db.Column(db.DateTime, default=None)
+    previous_login = db.Column(db.DateTime, default=None)
 
     def __init__(self, userid):
         self.userid = userid
         self.registration = datetime.now()
+
+# View classes
+class UserView(ModelView):
+    column_display_pk = True
+    column_hide_backrefs = False
+    column_list = (
+        'id', 'username', 'email', 'password_hash', 'phone_number', 'location', 'created_at', 'last_login', 'quizzes')
+
+class QuestionView(ModelView):
+    column_display_pk = True
+    column_hide_backrefs = False
+    column_list = (
+        'id', 'content', 'difficulty', 'topic', 'created_at', 'answers')
+
+class AnswerView(ModelView):
+    column_display_pk = True
+    column_hide_backrefs = False
+    column_list = (
+        'id', 'question_id', 'content', 'is_correct', 'created_at')
+
+class ResultView(ModelView):
+    column_display_pk = True
+    column_hide_backrefs = False
+    column_list = (
+        'id', 'user_id', 'score', 'time_taken', 'completed_at')
+
+class LeaderboardView(ModelView):
+    column_display_pk = True
+    column_hide_backrefs = False
+    column_list = (
+        'id', 'user_id', 'total_score', 'quizzes_completed', 'average_time', 'last_updated')
