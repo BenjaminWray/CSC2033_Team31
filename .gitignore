@@ -1,4 +1,7 @@
-﻿# python virtualenv
+﻿# jetbrains
+.idea/
+
+# python virtualenv
 .venv/
 
 # python cache
