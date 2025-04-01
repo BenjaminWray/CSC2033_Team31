@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from datetime import datetime
+from datetime import datetime, timezone
 from flask_admin.contrib.sqla import ModelView
 
 db = SQLAlchemy()
@@ -32,7 +32,7 @@ class Question(db.Model):
     content = db.Column(db.Text, nullable=False)
     difficulty = db.Column(db.String(20), nullable=False)
     topic = db.Column(db.String(100), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     answers = db.relationship('Answer', backref='question', lazy=True)
 
 class Answer(db.Model):
@@ -41,7 +41,7 @@ class Answer(db.Model):
     question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=False)
     content = db.Column(db.Text, nullable=False)
     is_correct = db.Column(db.Boolean, nullable=False, default=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
 
 class QuizResult(db.Model):
     __tablename__ = 'quiz_results'
@@ -49,7 +49,7 @@ class QuizResult(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     score = db.Column(db.Integer, nullable=False)
     time_taken = db.Column(db.Integer, nullable=False)  # in seconds
-    completed_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    completed_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
 
 class Leaderboard(db.Model):
     __tablename__ = 'leaderboards'
@@ -58,7 +58,7 @@ class Leaderboard(db.Model):
     total_score = db.Column(db.Integer, nullable=False, default=0)
     quizzes_completed = db.Column(db.Integer, nullable=False, default=0)
     average_time = db.Column(db.Float, nullable=False, default=0)
-    last_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    last_updated = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
 
 #configure a log class
 class Log(db.Model):
@@ -115,10 +115,10 @@ def create_question(content, difficulty, topic):
     return question
 
 def get_question_by_id(question_id):
-    return Question.query.get(question_id)
+    return db.session.get(Question, question_id)
 
 def update_question(question_id, content=None, difficulty=None, topic=None):
-    question = Question.query.get(question_id)
+    question = db.session.get(Question, question_id)
     if question:
         if content:
             question.content = content
@@ -130,7 +130,7 @@ def update_question(question_id, content=None, difficulty=None, topic=None):
     return question
 
 def delete_question(question_id):
-    question = Question.query.get(question_id)
+    question = db.session.get(Question, question_id)
     if question:
         db.session.delete(question)
         db.session.commit()
@@ -147,7 +147,7 @@ def get_answers_by_question_id(question_id):
     return Answer.query.filter_by(question_id=question_id).all()
 
 def update_answer(answer_id, content=None, is_correct=None):
-    answer = Answer.query.get(answer_id)
+    answer = db.session.get(Answer, answer_id)
     if answer:
         if content:
             answer.content = content
@@ -157,7 +157,7 @@ def update_answer(answer_id, content=None, is_correct=None):
     return answer
 
 def delete_answer(answer_id):
-    answer = Answer.query.get(answer_id)
+    answer = db.session.get(Answer, answer_id)
     if answer:
         db.session.delete(answer)
         db.session.commit()
@@ -177,10 +177,10 @@ def create_user(username, email, password_hash, phone_number=None, location=None
     return user
 
 def get_user_by_id(user_id):
-    return User.query.get(user_id)
+    return db.session.get(User, user_id)
 
 def update_user(user_id, username=None, email=None, phone_number=None, location=None):
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
     if user:
         if username:
             user.username = username
@@ -194,7 +194,7 @@ def update_user(user_id, username=None, email=None, phone_number=None, location=
     return user
 
 def delete_user(user_id):
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
     if user:
         db.session.delete(user)
         db.session.commit()
