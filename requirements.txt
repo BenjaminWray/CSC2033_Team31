@@ -7,3 +7,5 @@ flask-mysqldb~=2.0.0
 flask-admin~=1.6.1
 # environment variables 
 python-dotenv~=1.1.0
+# tests
+pytest~=8.3.5

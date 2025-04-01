@@ -1,8 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from datetime import datetime
 from flask_admin.contrib.sqla import ModelView
 
 db = SQLAlchemy()
+migrate = Migrate()
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -67,8 +69,8 @@ class Log(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     userid = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     registration = db.Column(db.DateTime, nullable=False)
-    latestlogin = db.Column(db.DateTime, default=None)
-    previouslogin = db.Column(db.DateTime, default=None)
+    latest_login = db.Column(db.DateTime, default=None)
+    previous_login = db.Column(db.DateTime, default=None)
 
     def __init__(self, userid):
         self.userid = userid
