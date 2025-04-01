@@ -16,6 +16,10 @@ class User(db.Model):
     last_login = db.Column(db.DateTime, nullable=True, server_default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
     quizzes = db.relationship('QuizResult', backref='user', lazy=True)
 
+    # Add the relationship between log and user
+    # This is a one-to-one relationship
+    log = db.relationship("Log", back_populates="user", uselist=False)
+
     def generate_log(self):
         db.session.add(Log(self.id))
         db.session.commit()
