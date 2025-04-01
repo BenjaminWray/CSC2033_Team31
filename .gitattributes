@@ -1,0 +1,2 @@
+# Set line endings to LF so the docker container can execute the startup script correctly
+*.sh text eol=lf

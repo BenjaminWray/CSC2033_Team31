@@ -1,7 +1,5 @@
 ﻿#!/usr/bin/bash
 
-echo "starting flask container"
-
 # install requirements
 pip install -r requirements.txt
 
