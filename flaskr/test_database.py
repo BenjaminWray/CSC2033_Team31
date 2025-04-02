@@ -69,3 +69,17 @@ class TestDatabase(unittest.TestCase):
             question = create_question("What is Python?", "Easy", "Programming")
             delete_question(question.id)
             self.assertIsNone(get_question_by_id(question.id))
+
+    def test_create_user_with_role_and_is_active(self):
+        with self.app.app_context():
+            user = create_user("adminuser", "admin@example.com", "hashedpassword", role="admin", is_active=False)
+            self.assertIsNotNone(user.id)
+            self.assertEqual(user.role, "admin")
+            self.assertFalse(user.is_active)
+
+    def test_update_user_role_and_is_active(self):
+        with self.app.app_context():
+            user = create_user("testuser", "test@example.com", "hashedpassword")
+            updated_user = update_user(user.id, role="admin", is_active=False)
+            self.assertEqual(updated_user.role, "admin")
+            self.assertFalse(updated_user.is_active)

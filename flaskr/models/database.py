@@ -15,6 +15,8 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, nullable=True, server_default=db.func.current_timestamp())
     last_login = db.Column(db.DateTime, nullable=True, server_default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
     quizzes = db.relationship('QuizResult', backref='user', lazy=True)
+    role = db.Column(db.String(20), nullable=False, default="user")  # Role (e.g., "user", "admin")
+    is_active = db.Column(db.Boolean, nullable=False, default=True)  # Whether the account is active
 
     # Add the relationship between log and user
     # This is a one-to-one relationship
@@ -79,7 +81,8 @@ class UserView(ModelView):
     column_display_pk = True
     column_hide_backrefs = False
     column_list = (
-        'id', 'username', 'email', 'password_hash', 'phone_number', 'location', 'created_at', 'last_login', 'quizzes')
+        'id', 'username', 'email', 'password_hash', 'phone_number', 'location', 'created_at', 'last_login', 'role', 'is_active', 'quizzes'
+    )
 
 class QuestionView(ModelView):
     column_display_pk = True
@@ -113,7 +116,7 @@ def create_question(content, difficulty, topic):
     return question
 
 def get_question_by_id(question_id):
-    return Question.query.get(question_id)
+    return db.session.get(Question, question_id)
 
 def update_question(question_id, content=None, difficulty=None, topic=None):
     question = Question.query.get(question_id)
@@ -128,7 +131,7 @@ def update_question(question_id, content=None, difficulty=None, topic=None):
     return question
 
 def delete_question(question_id):
-    question = Question.query.get(question_id)
+    question = db.session.get(Question, question_id)
     if question:
         db.session.delete(question)
         db.session.commit()
@@ -162,22 +165,24 @@ def delete_answer(answer_id):
     return answer
 
 # CRUD operations for User
-def create_user(username, email, password_hash, phone_number=None, location=None):
+def create_user(username, email, password_hash, phone_number=None, location=None, role="user", is_active=True):
     user = User(
         username=username,
         email=email,
         password_hash=password_hash,
         phone_number=phone_number,
-        location=location
+        location=location,
+        role=role,
+        is_active=is_active
     )
     db.session.add(user)
     db.session.commit()
     return user
 
 def get_user_by_id(user_id):
-    return User.query.get(user_id)
+    return db.session.get(User, user_id)
 
-def update_user(user_id, username=None, email=None, phone_number=None, location=None):
+def update_user(user_id, username=None, email=None, phone_number=None, location=None, role=None, is_active=None):
     user = User.query.get(user_id)
     if user:
         if username:
@@ -188,6 +193,10 @@ def update_user(user_id, username=None, email=None, phone_number=None, location=
             user.phone_number = phone_number
         if location:
             user.location = location
+        if role:
+            user.role = role
+        if is_active is not None:
+            user.is_active = is_active
         db.session.commit()
     return user
 
