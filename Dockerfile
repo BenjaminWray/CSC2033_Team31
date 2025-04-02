@@ -1,5 +1,5 @@
 ﻿# use python
-FROM python:latest
+FROM python:3.12
 
 # create working directory
 WORKDIR /app
