@@ -5,15 +5,14 @@
       - ./flaskr:/app/flaskr:ro
       - ./tests:/app/tests:ro
       - ./requirements.txt:/app/requirements.txt:ro
-      #- ./.env:/app/.env:ro
+      - ./.env:/app/.env:ro
       - ./start_container.sh:/app/start_container.sh:ro
     ports:
       - "5000:5000"
     environment:
       - MYSQL_HOST=mysql-db
-    command: /bin/bash -c "./start_container.sh"
   mysql-db:
-    hostname: db
+    hostname: mysql-db
     container_name: mysql-db
     image: mysql:latest
     restart: always

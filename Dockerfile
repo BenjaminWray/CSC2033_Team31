@@ -8,7 +8,5 @@ WORKDIR /app
 ENV PYTHONPATH="flaskr/"
 ENV FLASK_APP="flaskr/app.py"
 
-COPY .env /app/.env
-
 # execute startup shell script
 CMD ["/usr/bin/bash", "-c", "./start_container.sh"]
