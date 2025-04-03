@@ -1,10 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+<h2 class="signup-title">III Insight</h2>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    <label>{{ form.username.label }}</label>
+    {{ form.username(size=32) }}
+
+    <label>{{ form.email.label }}</label>
+    {{ form.email(size=32) }}
+
+    <label>{{ form.phone_number.label }}</label>
+    {{ form.phone_number(size=32) }}
+
+    <label>{{ form.location.label }}</label>
+    {{ form.location(size=32) }}
+
+    <label>{{ form.password.label }}</label>
+    {{ form.password(size=32) }}
+
+    <label>{{ form.confirm_password.label }}</label>
+    {{ form.confirm_password(size=32) }}
+
+    {{ form.submit(class="signup-button") }}
+</form>
+
+<div class="links">
+    <a href="{{ url_for('auth.login') }}">Login</a> |
+    <a href="{{ url_for('index') }}">Continue as Guest</a>
+</div>
+{% endblock %}

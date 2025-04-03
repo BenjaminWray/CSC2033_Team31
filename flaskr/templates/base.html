@@ -8,6 +8,18 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-left">
+            <span class="navbar-logo">III Insight</span>
+        </div>
+        <div class="navbar-right">
+            <a href="{{ url_for('auth.signup') }}">Sign Up</a>
+            <a href="{{ url_for('auth.login') }}">Login</a>
+            <a href="{{ url_for('index') }}">Guest</a>
+        </div>
+    </nav>
+
     {% block content %}
        <!-- The content of any template extending the base template will be embedded in this block -->
     {% endblock %}

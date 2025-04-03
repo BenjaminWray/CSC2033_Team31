@@ -1,15 +1,145 @@
+/* ========= GLOBAL ========= */
 body {
-    background-color: white;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #333;
+  background-color: #f8f9fd;
 }
 
-h1 {
-    text-align: center;
-    font-family: Georgia, serif;
-    font-size: 50px;
+/* ========= NAVBAR ========= */
+.navbar {
+  background-color: #ffffff;
+  padding: 16px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  position: sticky;
+  top: 0;
+  z-index: 999;
 }
 
-p {
-    text-align: center;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 20px;
+.navbar-left .navbar-logo {
+  font-size: 20px;
+  font-weight: bold;
+  color: #1a237e;
+  text-decoration: none;
+}
+
+.navbar-right a {
+  margin-left: 20px;
+  font-weight: 500;
+  color: #1a237e;
+  text-decoration: none;
+  font-size: 15px;
+  transition: color 0.3s ease;
+}
+
+.navbar-right a:hover {
+  color: #0f1859;
+}
+
+/* ========= LANDING PAGE ========= */
+.landing-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  padding: 20px;
+  background: linear-gradient(to bottom right, #f5f8ff, #e6f0ff);
+  text-align: center;
+}
+
+.landing-content {
+  max-width: 800px;
+}
+
+.welcome-logo {
+  width: 180px;
+  height: auto;
+  margin-bottom: 30px;
+}
+
+.welcome-title {
+  font-size: 40px;
+  font-weight: bold;
+  color: #1a237e;
+  margin-bottom: 15px;
+}
+
+.welcome-description {
+  font-size: 18px;
+  color: #444;
+  line-height: 1.6;
+}
+
+/* ========= SIGNUP PAGE ========= */
+.signup-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #1e4db7;
+  text-transform: uppercase;
+}
+
+form {
+  max-width: 600px;
+  margin: 20px auto 10px;
+  padding: 20px 40px 10px;
+}
+
+form label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+form input:focus {
+  border-color: #1e4db7;
+  outline: none;
+}
+
+.signup-button {
+  width: 100%;
+  background-color: #1e4db7;
+  color: white;
+  padding: 12px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.signup-button:hover {
+  background-color: #163b92;
+}
+
+.links {
+  text-align: center;
+  margin-top: 8px;
+  font-size: 15px;
+}
+
+.links a {
+  color: #1e4db7;
+  text-decoration: none;
+  margin: 0 10px;
+}
+
+.links a:hover {
+  text-decoration: underline;
 }

@@ -1,6 +1,13 @@
 ﻿{% extends "base.html" %}
 
 {% block content %}
-    <h1>III Insight</h1>
-    <p>paragraph text</p>
+<div class="landing-container">
+  <div class="landing-content">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="III Insight Logo" class="welcome-logo">
+    <h1 class="welcome-title">Welcome to III Insight</h1>
+    <p class="welcome-description">
+      An interactive platform to explore UN SDG 9 – Industry, Innovation and Infrastructure.
+    </p>
+  </div>
+</div>
 {% endblock %}
