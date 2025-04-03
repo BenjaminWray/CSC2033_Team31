@@ -1,10 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block content %}
+<div class="login-container">
+    <h2 class="signup-title">Login to III Insight</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <label>{{ form.email.label }}</label>
+        {{ form.email(size=32) }}
+
+        <label>{{ form.password.label }}</label>
+        {{ form.password(size=32) }}
+
+        {{ form.submit(class="signup-button") }}
+    </form>
+
+    <div class="links">
+        <a href="{{ url_for('auth.signup') }}">Don't have an account? Sign Up</a>
+    </div>
+</div>
+{% endblock %}
