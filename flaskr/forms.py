@@ -8,7 +8,7 @@ class SignUpForm(FlaskForm):
     phone_number = StringField('Phone Number')
     location = StringField('Location (e.g., Newcastle, UK)')
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
-    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password', message='Passwords must match')])
     submit = SubmitField('Sign Up')
 
 class LoginForm(FlaskForm):

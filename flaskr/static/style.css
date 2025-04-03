@@ -143,3 +143,9 @@ form input:focus {
 .links a:hover {
   text-decoration: underline;
 }
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin: 4px 0 10px;
+}
