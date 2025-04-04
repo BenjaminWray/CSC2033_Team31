@@ -1,7 +1,8 @@
 ﻿import os
 from dotenv import load_dotenv
 from flask import Flask
-from models.database import db, migrate
+
+from models.database import db, migrate, login_manager
 
 app = Flask(__name__)
 
@@ -26,3 +27,4 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY') or 'dev-secret'
 
 db.init_app(app)
 migrate.init_app(app, db)
+login_manager.init_app(app)
