@@ -35,11 +35,10 @@ def signup():
 
         # Create log entry
         new_user.generate_log()
-
         db.session.commit()
 
         flash('Account created successfully. You can now log in.', 'success')
-        return redirect(url_for('auth.login'))
+        return render_template('signup.html', form=form)
 
     elif form.is_submitted():
         return render_template('signup.html', form=form)
@@ -59,8 +58,5 @@ def login():
             return redirect(url_for('index'))
         else:
             flash('Invalid email or password.', 'danger')
-
-    else:
-        flash("Login failed. Please check your input.", "danger")
 
     return render_template('login.html', form=form)

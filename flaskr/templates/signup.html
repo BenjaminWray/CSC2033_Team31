@@ -3,23 +3,6 @@
 {% block content %}
 <h2 class="signup-title">III Insight</h2>
 
-{% if form.errors %}
-  <div style="background-color: #fdd; color: #900; padding: 10px;">
-    <h4>Form Errors</h4>
-    <pre>{{ form.errors }}</pre>
-  </div>
-{% endif %}
-
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <ul class="flashes">
-      {% for category, message in messages %}
-        <li class="flash {{ category }}">{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-
 <form method="POST" action="{{ url_for('auth.signup') }}">
     {{ form.hidden_tag() }}
 
