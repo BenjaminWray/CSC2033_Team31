@@ -129,7 +129,7 @@ def login():
             if user.role == 'admin':
                 return redirect(url_for('auth.admin_dashboard'))
             else:
-                return redirect(url_for('index'))
+                return redirect(url_for('auth.home'))
         else:
             flash('Invalid email or password.', 'danger')
 
@@ -140,3 +140,7 @@ def logout():
     logout_user()
     flash("You have been logged out.", "success")
     return redirect(url_for('index'))
+
+@auth_bp.route('/home')
+def home():
+    return render_template("home.html")

@@ -144,6 +144,45 @@ form input:focus {
   text-decoration: underline;
 }
 
+/* ========= HOME PAGE ========= */
+.home-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  padding: 20px;
+  background: linear-gradient(to bottom right, #f5f8ff, #e6f0ff);
+  text-align: center;
+}
+
+.home-content {
+  max-width: 800px;
+}
+
+.home-grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: center;
+  gap: 40px;
+}
+
+.home-grid-button {
+  background-color: royalblue;
+  align-content: center;
+  padding: 40px;
+  text-decoration: none;
+}
+
+.home-grid-button:hover {
+  background-color: cornflowerblue;
+}
+
+.home-grid-button h1 {
+  font-size: 35px;
+  font-weight: bold;
+  color: black;
+}
+
 /* ========= ERROR MESSAGES ========= */
 .error-message {
   color: red;
