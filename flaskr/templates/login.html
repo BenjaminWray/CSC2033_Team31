@@ -4,7 +4,7 @@
 <div class="login-container">
     <h2 class="signup-title">Login to III Insight</h2>
 
-    <form method="POST">
+    <form method="POST" action="{{ url_for('auth.login') }}">
         {{ form.hidden_tag() }}
 
         <label>{{ form.email.label }}</label>

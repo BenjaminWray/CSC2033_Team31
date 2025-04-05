@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="signup-title">🔒 Unauthorized</h2>
+<p class="welcome-description">
+  You must be logged in to access this page.
+</p>
+<div class="links">
+  <a href="{{ url_for('auth.login') }}">Login</a> |
+  <a href="{{ url_for('index') }}">Return to Home</a>
+</div>
+{% endblock %}

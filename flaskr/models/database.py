@@ -31,9 +31,6 @@ class User(db.Model, UserMixin):
         db.session.add(Log(self.id))
         db.session.commit()
 
-@login_manager.user_loader
-def load_user(user_id):
-    return db.session.get(User, int(user_id))
 
 class Question(db.Model):
     __tablename__ = 'questions'
