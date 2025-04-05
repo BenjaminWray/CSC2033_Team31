@@ -180,7 +180,12 @@ form input:focus {
 .home-grid-button h1 {
   font-size: 35px;
   font-weight: bold;
-  color: black;
+  color: white;
+}
+
+.home-grid-button p {
+  font-size: 16px;
+  color: white;
 }
 
 /* ========= ERROR MESSAGES ========= */
