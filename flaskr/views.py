@@ -1,6 +1,7 @@
 from functools import wraps
-from flask import Blueprint, render_template, redirect, url_for, flash, abort
+from flask import Blueprint, render_template, redirect, url_for, flash, abort, request
 from flask_login import login_user, current_user, login_required, logout_user
+from sqlalchemy import or_
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import SignUpForm, LoginForm
 from models.database import db, create_user, User, login_manager
@@ -22,13 +23,53 @@ def admin_required(f):
     return wrapper
 
 
-# Admin dashboard route
+# Admin dashboard with search + pagination
 @auth_bp.route('/admin')
 @login_required
 @admin_required
 def admin_dashboard():
-    users = User.query.all()
-    return render_template('admin_dashboard.html', users=users)
+    search_query = request.args.get("q", "").strip()
+    page = request.args.get("page", 1, type=int)
+    per_page = 5  # users per page
+
+    query = User.query
+    if search_query:
+        query = query.filter(
+            or_(
+                User.username.ilike(f"%{search_query}%"),
+                User.email.ilike(f"%{search_query}%")
+            )
+        )
+
+    users = query.order_by(User.id).paginate(page=page, per_page=per_page)
+    return render_template("admin_dashboard.html", users=users)
+
+@auth_bp.route('/admin/update_role/<int:user_id>', methods=['POST'])
+@login_required
+@admin_required
+def update_role(user_id):
+    user = User.query.get_or_404(user_id)
+    new_role = request.form.get('role')
+
+    if new_role not in ['user', 'admin']:
+        flash("Invalid role.", "danger")
+    else:
+        user.role = new_role
+        db.session.commit()
+        flash(f"User {user.username} role changed to {new_role}.", "success")
+
+    return redirect(url_for('auth.admin_dashboard'))
+
+
+@auth_bp.route('/admin/delete_user/<int:user_id>', methods=['POST'])
+@login_required
+@admin_required
+def delete_user(user_id):
+    user = User.query.get_or_404(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    flash(f"User {user.username} deleted.", "success")
+    return redirect(url_for('auth.admin_dashboard'))
 
 
 # User registration route
