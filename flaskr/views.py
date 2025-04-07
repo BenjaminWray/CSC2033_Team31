@@ -44,6 +44,7 @@ def admin_dashboard():
     users = query.order_by(User.id).paginate(page=page, per_page=per_page)
     return render_template("admin_dashboard.html", users=users)
 
+
 @auth_bp.route('/admin/update_role/<int:user_id>', methods=['POST'])
 @login_required
 @admin_required
@@ -70,6 +71,25 @@ def delete_user(user_id):
     db.session.commit()
     flash(f"User {user.username} deleted.", "success")
     return redirect(url_for('auth.admin_dashboard'))
+
+
+# User account route
+@auth_bp.route('/account')
+@login_required
+def account():
+    return render_template('account.html')
+
+
+@auth_bp.route('/quiz_history')
+@login_required
+def quiz_history():
+    return render_template("quiz_history.html")
+
+
+@auth_bp.route('/leaderboard')
+@login_required
+def leaderboard():
+    return render_template("leaderboard.html")
 
 
 # User registration route
@@ -129,11 +149,12 @@ def login():
             if user.role == 'admin':
                 return redirect(url_for('auth.admin_dashboard'))
             else:
-                return redirect(url_for('index'))
+                return redirect(url_for('auth.account'))
         else:
             flash('Invalid email or password.', 'danger')
 
     return render_template('login.html', form=form)
+
 
 @auth_bp.route('/logout')
 def logout():
