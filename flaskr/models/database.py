@@ -1,12 +1,15 @@
+from flask_login import UserMixin, LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import datetime, timezone
 from flask_admin.contrib.sqla import ModelView
 
+
 db = SQLAlchemy()
 migrate = Migrate()
+login_manager = LoginManager()
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
@@ -27,6 +30,7 @@ class User(db.Model):
     def generate_log(self):
         db.session.add(Log(self.id))
         db.session.commit()
+
 
 class Question(db.Model):
     __tablename__ = 'questions'

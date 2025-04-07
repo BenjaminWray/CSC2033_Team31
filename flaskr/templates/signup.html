@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="signup-title">III Insight</h2>
+
+<form method="POST" action="{{ url_for('auth.signup') }}">
+    {{ form.hidden_tag() }}
+
+    <label>{{ form.username.label }}</label>
+    {{ form.username(size=32) }}
+    {% for error in form.username.errors %}
+    <p class="error-message">{{ error }}</p>
+    {% endfor %}
+
+    <label>{{ form.email.label }}</label>
+    {{ form.email(size=32) }}
+    {% for error in form.email.errors %}
+    <p class="error-message">{{ error }}</p>
+    {% endfor %}
+
+    <label>{{ form.phone_number.label }}</label>
+    {{ form.phone_number(size=32) }}
+    {% for error in form.phone_number.errors %}
+    <p class="error-message">{{ error }}</p>
+    {% endfor %}
+
+    <label>{{ form.location.label }}</label>
+    {{ form.location(size=32) }}
+    {% for error in form.location.errors %}
+    <p class="error-message">{{ error }}</p>
+    {% endfor %}
+
+    <label>{{ form.password.label }}</label>
+    {{ form.password(size=32) }}
+    {% for error in form.password.errors %}
+    <p class="error-message">{{ error }}</p>
+    {% endfor %}
+
+    <label>{{ form.confirm_password.label }}</label>
+    {{ form.confirm_password(size=32) }}
+    {% for error in form.confirm_password.errors %}
+    <p class="error-message">{{ error }}</p>
+    {% endfor %}
+
+    {{ form.submit(class="signup-button") }}
+</form>
+
+<div class="links">
+    <a href="{{ url_for('auth.login') }}">Login</a> |
+    <a href="{{ url_for('index') }}">Continue as Guest</a>
+</div>
+{% endblock %}
