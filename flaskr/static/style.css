@@ -156,20 +156,21 @@ form input:focus {
 }
 
 .home-content {
-  max-width: 800px;
+  max-width: 1200px;
 }
 
 .home-grid-container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1.5fr;
   align-content: center;
   gap: 40px;
+  margin-top: 40px;
 }
 
 .home-grid-button {
   background-color: royalblue;
   align-content: center;
-  padding: 40px;
+  padding: 80px;
   text-decoration: none;
 }
 
