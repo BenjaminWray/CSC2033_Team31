@@ -44,7 +44,6 @@ def admin_dashboard():
     users = query.order_by(User.id).paginate(page=page, per_page=per_page)
     return render_template("admin_dashboard.html", users=users)
 
-
 @auth_bp.route('/admin/update_role/<int:user_id>', methods=['POST'])
 @login_required
 @admin_required
@@ -149,15 +148,18 @@ def login():
             if user.role == 'admin':
                 return redirect(url_for('auth.admin_dashboard'))
             else:
-                return redirect(url_for('auth.account'))
+                return redirect(url_for('auth.home'))
         else:
             flash('Invalid email or password.', 'danger')
 
     return render_template('login.html', form=form)
-
 
 @auth_bp.route('/logout')
 def logout():
     logout_user()
     flash("You have been logged out.", "success")
     return redirect(url_for('index'))
+
+@auth_bp.route('/home')
+def home():
+    return render_template("home.html")
