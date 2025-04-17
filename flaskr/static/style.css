@@ -189,6 +189,50 @@ form input:focus {
   color: white;
 }
 
+/* ========= QUIZZES PAGE ========= */
+.quizzes-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  padding: 20px;
+  background: linear-gradient(to bottom right, #f5f8ff, #e6f0ff);
+  text-align: center;
+}
+
+.quizzes-content {
+  max-width: 1200px;
+}
+
+.quizzes-content a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.quiz-title-container {
+  border: 3px solid darkblue;
+  border-radius: 15px;
+  background: aliceblue;
+  width: 600px;
+  margin: 10px;
+  padding: 20px;
+}
+
+.quiz-title-container h1 {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 1px;
+}
+
+.quiz-title-container p {
+  font-size: 14px;
+  margin: 1px;
+}
+
+.quiz-title-container:hover {
+  border-color: royalblue;
+}
+
 /* ========= ERROR MESSAGES ========= */
 .error-message {
   color: red;

@@ -4,7 +4,7 @@ from flask_login import login_user, current_user, login_required, logout_user
 from sqlalchemy import or_
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import SignUpForm, LoginForm
-from models.database import db, create_user, User, login_manager
+from models.database import db, create_user, User, login_manager, Quiz, get_user_by_id
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -98,6 +98,14 @@ def quiz_history():
 @login_required
 def leaderboard():
     return render_template("leaderboard.html")
+
+@auth_bp.route('/quizzes', methods=['GET'])
+def quizzes():
+    # Get all quizzes and their respective user information
+    quiz_dict = {}
+    for quiz in db.session.query(Quiz).all():
+        quiz_dict[quiz] = get_user_by_id(quiz.user_id)
+    return render_template("quizzes.html", quizzes=quiz_dict)
 
 
 # User registration route
