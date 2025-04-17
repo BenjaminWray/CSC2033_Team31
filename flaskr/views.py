@@ -176,3 +176,43 @@ def logout():
     logout_user()
     flash("You have been logged out.", "success")
     return redirect(url_for('auth.index'))
+
+@auth_bp.route('/flashcards', methods=['GET'])
+@login_required
+def flashcards():
+    """Display flashcards for a specific topic or all topics."""
+    topic = request.args.get('topic', None)
+    if topic:
+        questions = Question.query.filter_by(topic=topic).all()
+    else:
+        questions = Question.query.all()
+    return render_template('flashcards.html', questions=questions)
+
+
+@auth_bp.route('/flashcards/new', methods=['GET', 'POST'])
+@login_required
+def new_flashcard():
+    """Create a new flashcard."""
+    form = FlashcardForm()
+    if form.validate_on_submit():
+        existing_question = Question.query.filter_by(content=form.question.data).first()
+        if existing_question:
+            flash('A flashcard with this question already exists.', 'danger')
+            return redirect(url_for('auth.new_flashcard'))
+        try:
+            question = create_question(
+                content=form.question.data,
+                difficulty=form.difficulty.data,
+                topic=form.topic.data
+            )
+            create_answer(
+                question_id=question.id,
+                content=form.answer.data
+            )
+            flash('Flashcard created successfully!', 'success')
+            return redirect(url_for('auth.flashcards'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f"An error occurred: {str(e)}", 'danger')
+            return redirect(url_for('auth.new_flashcard'))
+    return render_template('new_flashcard.html', form=form)
