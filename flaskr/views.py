@@ -8,6 +8,10 @@ from models.database import db, create_user, User, login_manager
 
 auth_bp = Blueprint('auth', __name__)
 
+# Index page
+@auth_bp.route('/')
+def index():
+    return render_template('index.html')
 
 # Admin access restriction decorator
 def admin_required(f):
@@ -70,6 +74,11 @@ def delete_user(user_id):
     db.session.commit()
     flash(f"User {user.username} deleted.", "success")
     return redirect(url_for('auth.admin_dashboard'))
+
+# Home route
+@auth_bp.route('/home')
+def home():
+    return render_template('home.html')
 
 
 # User account route
@@ -158,8 +167,4 @@ def login():
 def logout():
     logout_user()
     flash("You have been logged out.", "success")
-    return redirect(url_for('index'))
-
-@auth_bp.route('/home')
-def home():
-    return render_template("home.html")
+    return redirect(url_for('auth.index'))

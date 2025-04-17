@@ -11,7 +11,7 @@
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="navbar-left">
-            <a href="{{ url_for('index') }}" class="navbar-logo">III Insight</a>
+            <a href="{{ url_for('auth.index') }}" class="navbar-logo">III Insight</a>
         </div>
         <div class="navbar-right">
             {% if current_user.is_authenticated %}
@@ -23,8 +23,8 @@
             {% else %}
                 <a href="{{ url_for('auth.signup') }}">Sign Up</a>
                 <a href="{{ url_for('auth.login') }}">Login</a>
-                <a href="{{ url_for('auth.home') }}">Guest</a>
             {% endif %}
+            <a href="{{ url_for('auth.home') }}">Home</a>
         </div>
     </nav>
 
