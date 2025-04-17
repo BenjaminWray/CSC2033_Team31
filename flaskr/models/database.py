@@ -19,7 +19,8 @@ class User(db.Model, UserMixin):
     location = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime, nullable=True, server_default=db.func.current_timestamp())
     last_login = db.Column(db.DateTime, nullable=True, server_default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
-    quizzes = db.relationship('QuizResult', backref='user', lazy=True)
+    quizzes = db.relationship('Quiz', backref='user', lazy=True)
+    results = db.relationship('QuizResult', backref='user', lazy=True)
     role = db.Column(db.String(20), nullable=False, default="user")  # Role (e.g., "user", "admin")
     is_active = db.Column(db.Boolean, nullable=False, default=True)  # Whether the account is active
 
@@ -31,10 +32,19 @@ class User(db.Model, UserMixin):
         db.session.add(Log(self.id))
         db.session.commit()
 
+class Quiz(db.Model):
+    __tablename__ = 'quizzes'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    title = db.Column(db.String(255), nullable=False)
+    questions = db.relationship('Question', backref='quiz', lazy=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
+    results = db.relationship("QuizResult", backref="quiz")
 
 class Question(db.Model):
     __tablename__ = 'questions'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    quiz_id = db.Column(db.Integer, db.ForeignKey('quizzes.id'), nullable=False)
     content = db.Column(db.Text, nullable=False)
     difficulty = db.Column(db.String(20), nullable=False)
     topic = db.Column(db.String(100), nullable=False)
@@ -52,6 +62,7 @@ class Answer(db.Model):
 class QuizResult(db.Model):
     __tablename__ = 'quiz_results'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    quiz_id = db.Column(db.Integer, db.ForeignKey('quizzes.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     score = db.Column(db.Integer, nullable=False)
     time_taken = db.Column(db.Integer, nullable=False)  # in seconds
@@ -90,6 +101,12 @@ class UserView(ModelView):
         'id', 'username', 'email', 'password_hash', 'phone_number', 'location', 'created_at', 'last_login', 'role', 'is_active', 'quizzes'
     )
 
+class QuizView(ModelView):
+    column_display_pk = True
+    column_hide_backrefs = False
+    column_list = (
+        'id', 'title', 'description', 'created_at')
+
 class QuestionView(ModelView):
     column_display_pk = True
     column_hide_backrefs = False
@@ -115,8 +132,8 @@ class LeaderboardView(ModelView):
         'id', 'userid', 'total_score', 'quizzes_completed', 'average_time', 'last_updated')
 
 # CRUD operations for Questions
-def create_question(content, difficulty, topic):
-    question = Question(content=content, difficulty=difficulty, topic=topic)
+def create_question(quiz_id, content, difficulty, topic):
+    question = Question(quiz_id=quiz_id, content=content, difficulty=difficulty, topic=topic)
     db.session.add(question)
     db.session.commit()
     return question
