@@ -85,7 +85,7 @@ def home():
 @auth_bp.route('/account')
 @login_required
 def account():
-    return render_template('account.html')
+    return render_template('account.html', user=current_user )
 
 
 @auth_bp.route('/quiz_history')
