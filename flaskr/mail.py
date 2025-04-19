@@ -2,9 +2,15 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+import os
+from dotenv import load_dotenv
+
+# load environment variables from .env file
+load_dotenv()
+
 # Mailjet SMTP credentials
-smtp_username = 'bb1167880dd50d14e05339f64668fced'
-smtp_password = 'af34f628c27a9898ab41978c2cd55662'
+smtp_username = os.getenv('SMTP_USERNAME')
+smtp_password = os.getenv('SMTP_SECRET')
 
 # Email content
 from_email = 'IIIinsight@outlook.com'   # must match your verified sender
