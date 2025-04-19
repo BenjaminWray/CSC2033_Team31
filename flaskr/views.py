@@ -8,10 +8,12 @@ from models.database import db, create_user, User, login_manager, Quiz, get_user
 
 auth_bp = Blueprint('auth', __name__)
 
+
 # Index page
 @auth_bp.route('/')
 def index():
     return render_template('index.html')
+
 
 # Admin access restriction decorator
 def admin_required(f):
@@ -48,6 +50,7 @@ def admin_dashboard():
     users = query.order_by(User.id).paginate(page=page, per_page=per_page)
     return render_template("admin_dashboard.html", users=users)
 
+
 @auth_bp.route('/admin/update_role/<int:user_id>', methods=['POST'])
 @login_required
 @admin_required
@@ -75,6 +78,7 @@ def delete_user(user_id):
     flash(f"User {user.username} deleted.", "success")
     return redirect(url_for('auth.admin_dashboard'))
 
+
 # Home route
 @auth_bp.route('/home')
 def home():
@@ -98,6 +102,7 @@ def quiz_history():
 @login_required
 def leaderboard():
     return render_template("leaderboard.html")
+
 
 @auth_bp.route('/quizzes', methods=['GET'])
 def quizzes():
@@ -170,6 +175,7 @@ def login():
             flash('Invalid email or password.', 'danger')
 
     return render_template('login.html', form=form)
+
 
 @auth_bp.route('/logout')
 def logout():
