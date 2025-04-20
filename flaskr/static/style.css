@@ -7,6 +7,18 @@ body {
   background-color: #f8f9fd;
 }
 
+#background-gradient {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+  background: linear-gradient(to bottom right, #f5f8ff, #e6f0ff);
+}
+
 /* ========= NAVBAR ========= */
 .navbar {
   background-color: #ffffff;
@@ -47,7 +59,6 @@ body {
   align-items: center;
   height: 90vh;
   padding: 20px;
-  background: linear-gradient(to bottom right, #f5f8ff, #e6f0ff);
   text-align: center;
 }
 
@@ -151,7 +162,7 @@ form input:focus {
   align-items: center;
   height: 90vh;
   padding: 20px;
-  background: linear-gradient(to bottom right, #f5f8ff, #e6f0ff);
+
   text-align: center;
 }
 
@@ -196,7 +207,6 @@ form input:focus {
   align-items: center;
   height: 90vh;
   padding: 20px;
-  background: linear-gradient(to bottom right, #f5f8ff, #e6f0ff);
   text-align: center;
 }
 
