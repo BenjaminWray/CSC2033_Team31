@@ -101,12 +101,25 @@ def leaderboard():
 
 @auth_bp.route('/quizzes', methods=['GET'])
 def quizzes():
-    # Get all quizzes and their respective user information
-    quiz_dict = {}
-    for quiz in db.session.query(Quiz).all():
-        quiz_dict[quiz] = get_user_by_id(quiz.user_id)
-    return render_template("quizzes.html", quizzes=quiz_dict)
+    page_number = request.args.get('page', 1, type=int) - 1
+    max_items = request.args.get('items', 10, type=int)
 
+    # Prevent negative page numbers
+    if page_number < 0: return redirect(url_for('auth.quizzes', page=1, items=max_items))
+
+    # Query to fetch quizzes from the database
+    quiz_query = db.session.query(Quiz)
+
+    # Calculate total number of pages and prevent out-of-range page numbers
+    max_pages = quiz_query.count() // max_items
+    if page_number > max_pages: return redirect(url_for('auth.quizzes', page=max_pages + 1, items=max_items))
+
+    # Get quizzes and user information for the current page
+    quiz_dict = {}
+    for quiz in quiz_query.all()[page_number * max_items:(page_number + 1) * max_items]:
+        quiz_dict[quiz] = get_user_by_id(quiz.user_id)
+
+    return render_template("quizzes.html", quizzes=quiz_dict)
 
 # User registration route
 @auth_bp.route('/signup', methods=['GET', 'POST'])
