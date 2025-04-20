@@ -2,16 +2,20 @@
 {% block content %}
     <div class="quizzes-container">
         <h2>Quizzes</h2>
-       <div class="quizzes-list">
-           {% for quiz in quizzes.keys() %}
-               <a href="/quizzes/{{ quizzes[quiz].id }}">
-                   <div class="quiz-button">
-                       <h1>{{ quiz.title }}</h1>
-                       <p>created by {{ quizzes[quiz].username }} at {{ quizzes[quiz].created_at }}</p>
-                   </div>
-               </a>
-           {% endfor %}
-       </div>
-
+        <div class="quizzes-list">
+            {% for quiz in quizzes.keys() %}
+                <a href="/quizzes/{{ quizzes[quiz].id }}">
+                    <div class="quiz-button">
+                        <h1>{{ quiz.title }}</h1>
+                        <p>created by {{ quizzes[quiz].username }} at {{ quizzes[quiz].created_at }}</p>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    <div class="pagination">
+        <a href="{{ url_for('auth.quizzes', page=pn - 1, items=mi) }}">Previous</a>
+        Page {{ pn }} of {{ pmax }}
+        <a href="{{ url_for('auth.quizzes', page=pn + 1, items=mi) }}">Next</a>
+    </div>
     </div>
 {% endblock %}
