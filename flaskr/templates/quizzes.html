@@ -13,9 +13,21 @@
             {% endfor %}
         </div>
     <div class="pagination">
-        <a href="{{ url_for('auth.quizzes', page=pn - 1, items=mi) }}">Previous</a>
+        {% if pn > 1 %}
+            <a href="{{ url_for('auth.quizzes', page=1, items=mi) }}">First</a>
+            <a href="{{ url_for('auth.quizzes', page=pn - 1, items=mi) }}">Previous</a>
+        {% else %}
+            <div style="color: dimgray">First</div>
+            <div style="color: dimgray">Previous</div>
+        {% endif %}
         Page {{ pn }} of {{ pmax }}
-        <a href="{{ url_for('auth.quizzes', page=pn + 1, items=mi) }}">Next</a>
+        {% if pn < pmax %}
+            <a href="{{ url_for('auth.quizzes', page=pn + 1, items=mi) }}">Next</a>
+            <a href="{{ url_for('auth.quizzes', page=pmax, items=mi) }}">Last</a>
+        {% else %}
+            <div style="color: dimgray">Next</div>
+            <div style="color: dimgray">Last</div>
+        {% endif %}
     </div>
     </div>
 {% endblock %}

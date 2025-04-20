@@ -208,17 +208,17 @@ form input:focus {
   text-align: center;
 }
 
-.quizzes-container a {
-  text-decoration: none;
-  color: inherit;
-}
-
 .quizzes-list {
   border: 2px solid lightgray;
   border-radius: 20px;
   background: aliceblue;
   padding: 5px;
   margin: 10px;
+}
+
+.quizzes-list a {
+  text-decoration: none;
+  color: inherit;
 }
 
 .quiz-button {
@@ -252,6 +252,10 @@ form input:focus {
   width: 600px;
   margin-top: 10px;
   margin-bottom: 20px;
+}
+
+.pagination a {
+  color: blue;
 }
 
 /* ========= ERROR MESSAGES ========= */
