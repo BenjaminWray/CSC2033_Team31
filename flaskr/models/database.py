@@ -41,6 +41,9 @@ class Quiz(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     results = db.relationship("QuizResult", backref="quiz")
 
+    def question_count(self):
+        return db.session.query(Question).filter_by(quiz_id=self.id).count()
+
 class Question(db.Model):
     __tablename__ = 'questions'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -105,7 +108,7 @@ class QuizView(ModelView):
     column_display_pk = True
     column_hide_backrefs = False
     column_list = (
-        'id', 'title', 'description', 'created_at')
+        'id', 'user_id', 'title', 'description', 'created_at')
 
 class QuestionView(ModelView):
     column_display_pk = True

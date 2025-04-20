@@ -7,6 +7,18 @@ body {
   background-color: #f8f9fd;
 }
 
+#background-gradient {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+  background: linear-gradient(to bottom right, #f5f8ff, #e6f0ff);
+}
+
 /* ========= NAVBAR ========= */
 .navbar {
   background-color: #ffffff;
@@ -47,7 +59,6 @@ body {
   align-items: center;
   height: 90vh;
   padding: 20px;
-  background: linear-gradient(to bottom right, #f5f8ff, #e6f0ff);
   text-align: center;
 }
 
@@ -151,7 +162,7 @@ form input:focus {
   align-items: center;
   height: 90vh;
   padding: 20px;
-  background: linear-gradient(to bottom right, #f5f8ff, #e6f0ff);
+
   text-align: center;
 }
 
@@ -192,45 +203,78 @@ form input:focus {
 /* ========= QUIZZES PAGE ========= */
 .quizzes-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  height: 90vh;
-  padding: 20px;
-  background: linear-gradient(to bottom right, #f5f8ff, #e6f0ff);
   text-align: center;
 }
 
-.quizzes-content {
-  max-width: 1200px;
+.quizzes-container form {
+  border: 2px solid lightgray;
+  all: unset;
 }
 
-.quizzes-content a {
+.quizzes-container form div * {
+  all: revert;
+}
+
+.quiz-search {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  width: 800px;
+}
+
+.quiz-list {
+  border: 2px solid lightgray;
+  border-radius: 15px;
+  background: aliceblue;
+  min-width: 800px;
+  padding: 5px;
+  margin: 10px;
+}
+
+.quiz-list a {
   text-decoration: none;
   color: inherit;
 }
 
-.quiz-title-container {
+.quiz-button {
   border: 3px solid darkblue;
   border-radius: 15px;
   background: aliceblue;
-  width: 600px;
-  margin: 10px;
+  width: 800px;
+  margin: 5px;
   padding: 20px;
 }
 
-.quiz-title-container h1 {
+.quiz-button h1 {
   font-size: 20px;
   font-weight: bold;
   margin: 1px;
 }
 
-.quiz-title-container p {
+.quiz-button p {
   font-size: 14px;
   margin: 1px;
 }
 
-.quiz-title-container:hover {
+.quiz-button:hover {
   border-color: royalblue;
+}
+
+.pagination {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 600px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.pagination a {
+  color: blue;
 }
 
 /* ========= ERROR MESSAGES ========= */
