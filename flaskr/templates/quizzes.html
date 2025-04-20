@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="quizzes-container">
-        <div class="quizzes-content">
-            <h2>Quizzes</h2>
-            {% for quiz in quizzes.keys() %}
-                <a href="/quizzes/{{ quizzes[quiz].id }}">
-                     <div class="quiz-title-container">
-                        <h1>{{ quiz.title }}</h1>
-                        <p>created by {{ quizzes[quiz].username }} at {{ quizzes[quiz].created_at }}</p>
-                    </div>
-                </a>
-            {% endfor %}
-        </div>
+        <h2>Quizzes</h2>
+       <div class="quizzes-list">
+           {% for quiz in quizzes.keys() %}
+               <a href="/quizzes/{{ quizzes[quiz].id }}">
+                   <div class="quiz-button">
+                       <h1>{{ quiz.title }}</h1>
+                       <p>created by {{ quizzes[quiz].username }} at {{ quizzes[quiz].created_at }}</p>
+                   </div>
+               </a>
+           {% endfor %}
+       </div>
+
     </div>
 {% endblock %}

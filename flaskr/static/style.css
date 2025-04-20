@@ -203,43 +203,47 @@ form input:focus {
 /* ========= QUIZZES PAGE ========= */
 .quizzes-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
   height: 90vh;
   padding: 20px;
   text-align: center;
 }
 
-.quizzes-content {
-  max-width: 1200px;
-}
-
-.quizzes-content a {
+.quizzes-container a {
   text-decoration: none;
   color: inherit;
 }
 
-.quiz-title-container {
+.quizzes-list {
+  border: 2px solid lightgray;
+  border-radius: 20px;
+  background: aliceblue;
+  padding: 5px;
+  margin: 10px;
+}
+
+.quiz-button {
   border: 3px solid darkblue;
   border-radius: 15px;
   background: aliceblue;
-  width: 600px;
-  margin: 10px;
+  width: 800px;
+  margin: 5px;
   padding: 20px;
 }
 
-.quiz-title-container h1 {
+.quiz-button h1 {
   font-size: 20px;
   font-weight: bold;
   margin: 1px;
 }
 
-.quiz-title-container p {
+.quiz-button p {
   font-size: 14px;
   margin: 1px;
 }
 
-.quiz-title-container:hover {
+.quiz-button:hover {
   border-color: royalblue;
 }
 
