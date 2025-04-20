@@ -208,7 +208,25 @@ form input:focus {
   text-align: center;
 }
 
-.quizzes-list {
+.quizzes-container form {
+  border: 2px solid lightgray;
+  all: unset;
+}
+
+.quizzes-container form div * {
+  all: revert;
+}
+
+.quiz-search {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  width: 800px;
+}
+
+.quiz-list {
   border: 2px solid lightgray;
   border-radius: 15px;
   background: aliceblue;
@@ -217,7 +235,7 @@ form input:focus {
   margin: 10px;
 }
 
-.quizzes-list a {
+.quiz-list a {
   text-decoration: none;
   color: inherit;
 }
