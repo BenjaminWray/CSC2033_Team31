@@ -210,8 +210,9 @@ form input:focus {
 
 .quizzes-list {
   border: 2px solid lightgray;
-  border-radius: 20px;
+  border-radius: 15px;
   background: aliceblue;
+  min-width: 800px;
   padding: 5px;
   margin: 10px;
 }

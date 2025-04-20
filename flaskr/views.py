@@ -111,6 +111,9 @@ def quizzes():
     # Query to fetch quizzes from the database
     quiz_query = db.session.query(Quiz)
 
+    # Check if the query returns no results
+    if quiz_query.count() == 0: return render_template("quizzes.html", quizzes={}, pn=1, pmax=1, imax=max_items)
+
     # Calculate total number of pages and prevent out-of-range page numbers
     max_pages = math.ceil(quiz_query.count() / max_items)
     if page_number > max_pages: return redirect(url_for('auth.quizzes', page=max_pages, items=max_items))
@@ -120,7 +123,7 @@ def quizzes():
     for quiz in quiz_query.all()[(page_number - 1) * max_items:page_number * max_items]:
         quiz_dict[quiz] = get_user_by_id(quiz.user_id)
 
-    return render_template("quizzes.html", quizzes=quiz_dict, pn=page_number, pmax=max_pages, mi=max_items)
+    return render_template("quizzes.html", quizzes=quiz_dict, pn=page_number, pmax=max_pages, imax=max_items)
 
 # User registration route
 @auth_bp.route('/signup', methods=['GET', 'POST'])
