@@ -142,6 +142,7 @@ def quizzes():
             case 'date': sort_func=lambda x: x.created_at
             case 'title': sort_func=lambda x: x.title
             case 'user': sort_func=lambda x: users[x].username
+            case 'question_count': sort_func=lambda x: x.question_count()
             case _: sort_func=lambda x: x.id
         quiz_list.sort(key=sort_func, reverse=form.sort_order.data == "desc")
     else:

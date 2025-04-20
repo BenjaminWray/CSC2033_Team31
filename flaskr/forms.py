@@ -19,6 +19,6 @@ class LoginForm(FlaskForm):
 class QuizSearchForm(FlaskForm):
     search_query = StringField('Search:')
     search_by = SelectField('Search by:', choices=[('title', 'Title'), ('user', 'User')])
-    sort_by = SelectField('Sort by:', choices=[('date', 'Date'), ('title', 'Title'), ('user', 'User')])
+    sort_by = SelectField('Sort by:', choices=[('date', 'Date'), ('title', 'Title'), ('user', 'User'), ('question_count', 'Question Count')])
     sort_order = SelectField('Order:', choices=[('desc', 'Descending'), ('asc', 'Ascending')])
     submit = SubmitField('Search')
