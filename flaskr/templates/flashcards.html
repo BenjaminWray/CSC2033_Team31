@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Flashcards</h1>
+
+<!-- Topic Selection -->
+<div class="topic-selection">
+    <form method="GET" action="{{ url_for('auth.flashcards') }}">
+        <label for="topic">Choose a topic:</label>
+        <select name="topic" id="topic" onchange="this.form.submit()">
+            <option value="">All Topics</option>
+            {% for topic in topics %}
+                <option value="{{ topic }}" {% if request.args.get('topic') == topic %}selected{% endif %}>
+                    {{ topic }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+</div>
+
+<!-- Flashcard Display -->
+{% if questions %}
+    <div class="flashcard">
+        <p><strong>Question:</strong> {{ questions[current_index].content }}</p>
+        <button id="show-answer">Show Answer</button>
+        <p id="answer" style="display: none;"><strong>Answer:</strong> {{ questions[current_index].answers[0].content }}</p>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="navigation-buttons">
+        {% if current_index > 0 %}
+            <a href="{{ url_for('auth.flashcards', topic=request.args.get('topic'), index=current_index-1) }}" class="btn">Previous</a>
+        {% endif %}
+        {% if current_index < questions|length - 1 %}
+            <a href="{{ url_for('auth.flashcards', topic=request.args.get('topic'), index=current_index+1) }}" class="btn">Next</a>
+        {% endif %}
+    </div>
+{% else %}
+    <p>No flashcards available for this topic.</p>
+{% endif %}
+
+<script>
+    document.getElementById('show-answer').addEventListener('click', function() {
+        document.getElementById('answer').style.display = 'block';
+    });
+</script>
+{% endblock %}
