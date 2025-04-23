@@ -1,9 +1,10 @@
+import math
 from functools import wraps
 from flask import Blueprint, render_template, redirect, url_for, flash, abort, request
 from flask_login import login_user, current_user, login_required, logout_user
 from sqlalchemy import or_
 from werkzeug.security import generate_password_hash, check_password_hash
-from forms import SignUpForm, LoginForm
+from forms import SignUpForm, LoginForm, QuizSearchForm
 from models.database import db, create_user, User, login_manager, Quiz, get_user_by_id
 
 auth_bp = Blueprint('auth', __name__)
@@ -85,7 +86,7 @@ def home():
 @auth_bp.route('/account')
 @login_required
 def account():
-    return render_template('account.html')
+    return render_template('account.html', user=current_user )
 
 
 @auth_bp.route('/quiz_history')
@@ -99,14 +100,56 @@ def quiz_history():
 def leaderboard():
     return render_template("leaderboard.html")
 
-@auth_bp.route('/quizzes', methods=['GET'])
+@auth_bp.route('/quizzes', methods=['GET', 'POST'])
 def quizzes():
-    # Get all quizzes and their respective user information
-    quiz_dict = {}
-    for quiz in db.session.query(Quiz).all():
-        quiz_dict[quiz] = get_user_by_id(quiz.user_id)
-    return render_template("quizzes.html", quizzes=quiz_dict)
+    form = QuizSearchForm()
 
+    # Pagination setup
+    if form.validate_on_submit(): page_number = 1
+    else: page_number = request.args.get('page', 1, type=int)
+    max_items = request.args.get('items', 15, type=int)
+
+    # Prevent negative page numbers
+    if page_number < 1: return redirect(url_for('auth.quizzes', form=form, page=1, items=max_items))
+
+    # Query to fetch quizzes from the database
+    quiz_query = db.session.query(Quiz)
+
+    # Filter query by search term
+    if form.validate_on_submit():
+        search_term = form.search_query.data.strip()
+        if search_term:
+            if form.search_by.data == 'title':
+                quiz_query = quiz_query.filter(Quiz.title.ilike(f'%{search_term}%'))
+            elif form.search_by.data == 'user':
+                quiz_query = quiz_query.filter(Quiz.user_id == User.id, User.username.ilike(f'%{search_term}%'))
+
+    # Check if the query returns no results
+    if quiz_query.count() == 0: return render_template("quizzes.html", form=form, quizzes={}, pn=1, pmax=1, imax=max_items)
+
+    # Calculate total number of pages and prevent out-of-range page numbers
+    max_pages = math.ceil(quiz_query.count() / max_items)
+    if page_number > max_pages: return redirect(url_for('auth.quizzes', page=max_pages, items=max_items))
+
+    # Get quizzes and user information for the current page
+    quiz_list = quiz_query.all()[(page_number - 1) * max_items:page_number * max_items]
+    users = {}
+    for quiz in quiz_list: users[quiz] = get_user_by_id(quiz.user_id)
+
+    # Sort the quizzes based on form data
+    if form.validate_on_submit():
+        match form.sort_by.data:
+            case 'date': sort_func=lambda x: x.created_at
+            case 'title': sort_func=lambda x: x.title
+            case 'user': sort_func=lambda x: users[x].username
+            case 'question_count': sort_func=lambda x: x.question_count()
+            case _: sort_func=lambda x: x.id
+        quiz_list.sort(key=sort_func, reverse=form.sort_order.data == "desc")
+    else:
+        # Default sorting by date in descending order
+        quiz_list.sort(key=lambda x: x.created_at, reverse=True)
+
+    return render_template("quizzes.html", form=form, quizzes=quiz_list, users=users, pn=page_number, pmax=max_pages, imax=max_items)
 
 # User registration route
 @auth_bp.route('/signup', methods=['GET', 'POST'])

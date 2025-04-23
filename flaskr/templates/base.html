@@ -24,7 +24,10 @@
                 <a href="{{ url_for('auth.signup') }}">Sign Up</a>
                 <a href="{{ url_for('auth.login') }}">Login</a>
             {% endif %}
-            <a href="{{ url_for('auth.home') }}">Home</a>
+
+            {% if current_user.is_authenticated and current_user.role != 'admin' %}
+                <a href="{{ url_for('auth.home') }}">Home</a>
+            {% endif %}
         </div>
     </nav>
 
@@ -41,5 +44,8 @@
     {% block content %}
        <!-- The content of any template extending the base template will be embedded in this block -->
     {% endblock %}
+
+    <!-- Background gradient for the entire page -->
+    <div id="background-gradient"></div>
 </body>
 </html>

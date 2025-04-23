@@ -7,6 +7,18 @@ body {
   background-color: #f8f9fd;
 }
 
+#background-gradient {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+  background: linear-gradient(to bottom right, #f5f8ff, #e6f0ff);
+}
+
 /* ========= NAVBAR ========= */
 .navbar {
   background-color: #ffffff;
@@ -47,7 +59,6 @@ body {
   align-items: center;
   height: 90vh;
   padding: 20px;
-  background: linear-gradient(to bottom right, #f5f8ff, #e6f0ff);
   text-align: center;
 }
 
@@ -151,7 +162,7 @@ form input:focus {
   align-items: center;
   height: 90vh;
   padding: 20px;
-  background: linear-gradient(to bottom right, #f5f8ff, #e6f0ff);
+
   text-align: center;
 }
 
@@ -192,45 +203,78 @@ form input:focus {
 /* ========= QUIZZES PAGE ========= */
 .quizzes-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  height: 90vh;
-  padding: 20px;
-  background: linear-gradient(to bottom right, #f5f8ff, #e6f0ff);
   text-align: center;
 }
 
-.quizzes-content {
-  max-width: 1200px;
+.quizzes-container form {
+  border: 2px solid lightgray;
+  all: unset;
 }
 
-.quizzes-content a {
+.quizzes-container form div * {
+  all: revert;
+}
+
+.quiz-search {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  width: 800px;
+}
+
+.quiz-list {
+  border: 2px solid lightgray;
+  border-radius: 15px;
+  background: aliceblue;
+  min-width: 800px;
+  padding: 5px;
+  margin: 10px;
+}
+
+.quiz-list a {
   text-decoration: none;
   color: inherit;
 }
 
-.quiz-title-container {
+.quiz-button {
   border: 3px solid darkblue;
   border-radius: 15px;
   background: aliceblue;
-  width: 600px;
-  margin: 10px;
+  width: 800px;
+  margin: 5px;
   padding: 20px;
 }
 
-.quiz-title-container h1 {
+.quiz-button h1 {
   font-size: 20px;
   font-weight: bold;
   margin: 1px;
 }
 
-.quiz-title-container p {
+.quiz-button p {
   font-size: 14px;
   margin: 1px;
 }
 
-.quiz-title-container:hover {
+.quiz-button:hover {
   border-color: royalblue;
+}
+
+.pagination {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 600px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.pagination a {
+  color: blue;
 }
 
 /* ========= ERROR MESSAGES ========= */
@@ -279,4 +323,46 @@ form input:focus {
   background-color: #e6ffed;
   border: 1px solid #88d8a0;
   color: #207544;
+}
+
+/* ========= ACCOUNT PAGE BUTTONS ========= */
+.account-btn {
+  display: inline-block;
+  width: 200px;
+  height: 90px;
+  background-color: #e4ecff;
+  border-radius: 14px;
+  text-align: center;
+  line-height: 90px;
+  font-weight: 600;
+  font-size: 18px;
+  color: #2a4bcc;
+  text-decoration: none;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.account-btn:hover {
+  background-color: #00cc66;
+  color: white;
+}
+
+.home-btn {
+  display: inline-block;
+  width: 460px;
+  height: 65px;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: 500;
+  background-color: white;
+  color: black;
+  line-height: 65px;
+  text-decoration: none;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.home-btn:hover {
+  background-color: #00cc66;
+  color: white;
+  border-color: #00cc66;
 }

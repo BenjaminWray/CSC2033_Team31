@@ -1,16 +1,60 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="quizzes-container">
-        <div class="quizzes-content">
-            <h2>Quizzes</h2>
-            {% for quiz in quizzes.keys() %}
-                <a href="/quizzes/{{ quizzes[quiz].id }}">
-                     <div class="quiz-title-container">
-                        <h1>{{ quiz.title }}</h1>
-                        <p>created by {{ quizzes[quiz].username }} at {{ quizzes[quiz].created_at }}</p>
-                    </div>
-                </a>
-            {% endfor %}
+        <h2>Quizzes</h2>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <div class="quiz-search">
+                <div>
+                    <label>{{ form.search_by.label }}</label>
+                    {{ form.search_by }}
+
+                    <label>{{ form.search_query }}</label>
+                    {{ form.submit() }}
+                </div>
+
+                <div>
+                    <label>{{ form.sort_by.label }}</label>
+                    {{ form.sort_by }}
+
+                    <label>{{ form.sort_order.label }}</label>
+                    {{ form.sort_order }}
+                </div>
+            </div>
+        </form>
+
+        <div class="quiz-list">
+            {% if quizzes | length > 0 %}
+                {% for quiz in quizzes %}
+                    <a href="/quizzes/{{ quiz.id }}">
+                        <div class="quiz-button">
+                            <h1>{{ quiz.title }}</h1>
+                            <p>created by {{ users[quiz].username }} at {{ quiz.created_at }}</p>
+                        </div>
+                    </a>
+                {% endfor %}
+            {% else %}
+                No results.
+            {% endif %}
+        </div>
+
+        <div class="pagination">
+            {% if pn > 1 %}
+                <a href="{{ url_for('auth.quizzes', page=1, items=imax) }}">First</a>
+                <a href="{{ url_for('auth.quizzes', page=pn - 1, items=imax) }}">Previous</a>
+            {% else %}
+                <div style="color: dimgray">First</div>
+                <div style="color: dimgray">Previous</div>
+            {% endif %}
+            Page {{ pn }} of {{ pmax }}
+            {% if pn < pmax %}
+                <a href="{{ url_for('auth.quizzes', page=pn + 1, items=imax) }}">Next</a>
+                <a href="{{ url_for('auth.quizzes', page=pmax, items=imax) }}">Last</a>
+            {% else %}
+                <div style="color: dimgray">Next</div>
+                <div style="color: dimgray">Last</div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

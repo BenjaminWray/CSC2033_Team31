@@ -1,48 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div style="max-width: 700px; margin: 0 auto; padding: 40px 20px; font-family: 'Segoe UI', sans-serif; text-align: center;">
+<div style="max-width: 900px; margin: 0 auto; padding: 60px 20px; font-family: 'Segoe UI', sans-serif;">
 
-    <!-- Logo -->
-    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="III Logo"
-         style="height: 120px; margin-bottom: 20px;">
+    <!-- Header: Title + Date + Logo -->
+    <div style="display: flex; justify-content: center; align-items: center; gap: 40px; margin-bottom: 40px;">
+        <div style="display: flex; flex-direction: column; align-items: flex-start;">
+            <div style="font-size: 22px; font-weight: 600;">My Account</div>
+            <div style="font-size: 18px; margin-top: 8px;">
+                <strong>Account creation Date:</strong> {{ current_user.created_at.strftime('%Y-%m-%d') }}
+            </div>
+        </div>
 
-    <!-- Title -->
-    <h2 style="font-size: 28px; font-weight: bold; color: #222;">My Account</h2>
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="III Logo"
+             style="height: 150px;">
+    </div>
 
-    <!-- User Info -->
-    <div style="margin-top: 20px; color: #444; font-size: 16px;">
+    <!-- Username -->
+    <div style="text-align: center; font-size: 18px; color: #333; margin: 40px 0;">
         <p><strong>Username:</strong> {{ current_user.username }}</p>
-        <p><strong>Email:</strong> {{ current_user.email }}</p>
-        <p><strong>Account created:</strong> {{ current_user.created_at.strftime('%Y-%m-%d') }}</p>
     </div>
 
     <!-- Action Buttons -->
-    <div style="display: flex; justify-content: center; gap: 40px; margin-top: 40px;">
-        <a href="{{ url_for('auth.quiz_history') }}" style="text-decoration: none;">
-            <div style="width: 180px; height: 80px; background-color: #e4ecff; border-radius: 12px;
-                        display: flex; justify-content: center; align-items: center;
-                        transition: 0.2s; font-size: 18px; font-weight: 600; color: #2a4bcc;">
-                Quiz History
-            </div>
-        </a>
-        <a href="{{ url_for('auth.leaderboard') }}" style="text-decoration: none;">
-            <div style="width: 180px; height: 80px; background-color: #e4ecff; border-radius: 12px;
-                        display: flex; justify-content: center; align-items: center;
-                        transition: 0.2s; font-size: 18px; font-weight: 600; color: #2a4bcc;">
-                Leaderboards
-            </div>
-        </a>
+    <div style="display: flex; justify-content: center; gap: 60px; margin-bottom: 60px;">
+        <a href="{{ url_for('auth.quiz_history') }}" class="account-btn">Quiz History</a>
+        <a href="{{ url_for('auth.leaderboard') }}" class="account-btn">Leaderboards</a>
     </div>
 
-    <!-- Return Home -->
-    <div style="margin-top: 50px;">
-        <a href="{{ url_for('auth.home') }}">
-            <button style="padding: 10px 24px; font-size: 15px; border: 1px solid #aaa;
-                           border-radius: 6px; background-color: white; cursor: pointer;">
-                Return Home
-            </button>
-        </a>
+    <!-- Return Home Button -->
+    <div style="text-align: center;">
+        <a href="{{ url_for('auth.home') }}" class="home-btn">Return Home</a>
     </div>
 </div>
 {% endblock %}
