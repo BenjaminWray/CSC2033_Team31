@@ -5,6 +5,8 @@ from email.mime.text import MIMEText
 import os
 from dotenv import load_dotenv
 
+from models.database import User
+
 # load environment variables from .env file
 load_dotenv()
 
@@ -31,3 +33,12 @@ def send_email(reciever_email, subject, body):
     except Exception as e:
         print(f'❌ Failed to send email: {e}')
 
+
+def reg_email(user):
+    subject = "User registration"
+    body = ("Thank you for Registering an account with III Insight.\nWe look forward to helping you improve your "
+            "knowledge on Industry, Innovation, and Infrastructure.\nTo help you improve your knowledge and "
+            "understanding we have flashcards and quizzes and we hope to see you on our leaderboard sometime "
+            "soon.\nFrom the III Insight team.")
+
+    send_email(user.email, subject, body)
