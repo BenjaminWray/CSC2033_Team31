@@ -42,3 +42,11 @@ def reg_email(user):
             "soon.\nFrom the III Insight team.")
 
     send_email(user.email, subject, body)
+
+
+def overtake_email(user, overtaker):
+    subject = "leaderboard position"
+    body = (f"Oh no, we're sorry to say that user {overtaker.username} has overtaken you on the leaderboard.\nHowever "
+            "it's not too late to take your position back just attempt another quiz now.\nFrom the III Insight team")
+
+    send_email(user.email, subject, body)
