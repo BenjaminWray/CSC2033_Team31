@@ -21,10 +21,8 @@ def admin_required(f):
     def wrapper(*args, **kwargs):
         if not current_user.is_authenticated:
             return login_manager.unauthorized()
-
         if current_user.role.strip() != 'admin':
             abort(403)
-
         return f(*args, **kwargs)
     return wrapper
 
@@ -83,6 +81,11 @@ def home():
     return render_template('home.html')
 
 
+# Helper function for account rendering
+def render_account_page(message=None, error=None):
+    return render_template('account.html', user=current_user, message=message, error=error)
+
+
 # User account route
 @auth_bp.route('/account')
 @login_required
@@ -94,6 +97,26 @@ def account():
 @login_required
 def quiz_history():
     return render_template("quiz_history.html")
+
+
+# Username change handler
+@auth_bp.route('/change_username', methods=['POST'])
+@login_required
+def change_username():
+    new_username = request.form.get('new_username', '').strip()
+
+    if not new_username:
+        return render_account_page(error="Username cannot be empty.")
+
+    if new_username == current_user.username:
+        return render_account_page(error="New username is the same as current username.")
+
+    if User.query.filter_by(username=new_username).first():
+        return render_account_page(error="Username already exists.")
+
+    current_user.username = new_username
+    db.session.commit()
+    return render_account_page(message="Username updated successfully!")
 
 
 @auth_bp.route('/leaderboard')

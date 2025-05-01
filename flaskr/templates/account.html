@@ -16,10 +16,42 @@
              style="height: 150px;">
     </div>
 
-    <!-- Username -->
-    <div style="text-align: center; font-size: 18px; color: #333; margin: 40px 0;">
-        <p><strong>Username:</strong> {{ current_user.username }}</p>
+    <!-- Username section -->
+<div style="text-align: center; font-size: 18px; color: #333; margin: 20px 0;">
+
+    <!-- Username display + Edit button -->
+    <div id="username-display">
+        <p><strong>Username:</strong> {{ current_user.username }}
+            <button onclick="toggleEdit(true)" style="margin-left: 10px; font-size: 14px; padding: 4px 8px;">
+                ✎ Edit
+            </button>
+        </p>
     </div>
+
+    <!-- Username edit form (hidden by default) -->
+    <div id="username-edit" style="display: none;">
+        <form method="POST" action="{{ url_for('auth.change_username') }}" style="display: inline-block;">
+            <input type="text" name="new_username" placeholder="Enter new username"
+                   style="padding: 6px; font-size: 16px; border-radius: 6px; border: 1px solid #ccc;" required>
+            <button type="submit"
+                    style="margin-left: 8px; padding: 6px 12px; font-size: 14px; background-color: #007BFF; color: white; border: none; border-radius: 6px;">
+                Save
+            </button>
+
+            <button type="button" onclick="toggleEdit(false)"
+                    style="margin-left: 8px; padding: 6px 12px; font-size: 14px; background-color: #ccc; color: black; border: none; border-radius: 6px;">
+                Cancel
+            </button>
+        </form>
+    </div>
+
+    <!-- Success or error message -->
+    {% if message %}
+        <p style="color: green; margin-top: 10px;">{{ message }}</p>
+    {% elif error %}
+        <p style="color: red; margin-top: 10px;">{{ error }}</p>
+    {% endif %}
+</div>
 
     <!-- Action Buttons -->
     <div style="display: flex; justify-content: center; gap: 60px; margin-bottom: 60px;">
@@ -32,4 +64,12 @@
         <a href="{{ url_for('auth.home') }}" class="home-btn">Return Home</a>
     </div>
 </div>
+
+<!-- JavaScript to toggle username edit -->
+<script>
+    function toggleEdit(showForm) {
+        document.getElementById('username-display').style.display = showForm ? 'none' : 'block';
+        document.getElementById('username-edit').style.display = showForm ? 'block' : 'none';
+    }
+</script>
 {% endblock %}
