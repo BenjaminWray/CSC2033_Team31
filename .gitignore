@@ -1,7 +1,4 @@
-﻿# jetbrains
-.idea/
-
-# python virtualenv
+﻿# python virtualenv
 .venv/
 
 # python cache
@@ -20,3 +17,9 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+
+# Environment variables
+.env
+
+# JetBrains IDE settings
+.idea/

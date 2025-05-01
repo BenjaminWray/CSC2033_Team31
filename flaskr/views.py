@@ -5,7 +5,8 @@ from flask_login import login_user, current_user, login_required, logout_user
 from sqlalchemy import or_
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import SignUpForm, LoginForm, QuizSearchForm
-from models.database import db, create_user, User, login_manager, Quiz, get_user_by_id
+from models.database import db, create_user, User, login_manager, Quiz, get_user_by_id, Question
+#, create_question, create_answer
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -157,7 +158,6 @@ def signup():
     form = SignUpForm()
 
     if form.validate_on_submit():
-
         # Check for existing username/email
         if User.query.filter_by(username=form.username.data).first():
             flash('Username already taken.', 'danger')
@@ -175,6 +175,8 @@ def signup():
             username=form.username.data,
             email=form.email.data,
             password_hash=hashed_password,
+            firstname=form.firstname.data,  # Collect firstname from the form
+            lastname=form.lastname.data,    # Collect lastname from the form
             phone_number=form.phone_number.data,
             location=form.location.data
         )
@@ -184,10 +186,11 @@ def signup():
         db.session.commit()
 
         flash('Account created successfully. You can now log in.', 'success')
-        return render_template('signup.html', form=form)
+        return redirect(url_for('auth.login'))
 
     elif form.is_submitted():
-        return render_template('signup.html', form=form)
+        print("DEBUG: Form submitted but not validated")
+        print(form.errors)  # Print validation errors
 
     return render_template('signup.html', form=form)
 
