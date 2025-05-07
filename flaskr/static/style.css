@@ -386,3 +386,10 @@ form input:focus {
     border-color: #4a90e2;
     box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
 }
+
+.form-hint {
+    color: #888;
+    font-size: 0.85em;
+    margin-top: 2px;
+    display: block;
+}
