@@ -36,11 +36,14 @@
     <p class="error-message">{{ error }}</p>
     {% endfor %}
 
-    <label>{{ form.location.label }}</label>
-    {{ form.location(size=32) }}
+
+<div class="form-group">
+    <label for="location">{{ form.location.label }}</label>
+    {{ form.location(class="form-select custom-select") }}
     {% for error in form.location.errors %}
     <p class="error-message">{{ error }}</p>
     {% endfor %}
+</div>
 
     <label>{{ form.password.label }}</label>
     {{ form.password(size=32) }}

@@ -8,7 +8,13 @@ class SignUpForm(FlaskForm):
     firstname = StringField('First Name', validators=[DataRequired(), Length(max=100)])
     lastname = StringField('Last Name', validators=[DataRequired(), Length(max=100)])
     phone_number = StringField('Phone Number')
-    location = StringField('Location (e.g., Newcastle, UK)')
+    location = SelectField('Location (optional)', choices=[
+        ('', 'Select your location'),
+        ('newcastle', 'Newcastle, UK'),
+        ('london', 'London, UK'),
+        ('manchester', 'Manchester, UK'),
+        ('edinburgh', 'Edinburgh, UK'),
+    ], validators=[])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password', message='Passwords must match')])
     submit = SubmitField('Sign Up')
