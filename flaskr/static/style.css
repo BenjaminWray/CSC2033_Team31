@@ -314,8 +314,14 @@ form input:focus {
 /* flash danger */
 .flash.danger {
   background-color: #ffe6e6;
-  border: 1px solid #ff9999;
+  border: 2px solid #ff4d4d;
   color: #cc0000;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+  padding: 12px 18px;
+  animation: shake 0.3s ease-in-out 2;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
 }
 
 /* flash success */

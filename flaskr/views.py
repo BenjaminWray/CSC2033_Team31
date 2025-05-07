@@ -90,8 +90,10 @@ def render_account_page(message=None, error=None):
 @auth_bp.route('/account')
 @login_required
 def account():
-    return render_template('account.html', user=current_user )
-
+    if current_user.username.lower() == 'guest':
+        flash("🚫 Guests are not allowed to access the account page.", "danger")
+        return redirect(url_for('auth.home'))
+    return render_template('account.html', user=current_user)
 
 @auth_bp.route('/quiz_history')
 @login_required
@@ -285,3 +287,23 @@ def new_flashcard():
             flash(f"An error occurred: {str(e)}", 'danger')
             return redirect(url_for('auth.new_flashcard'))
     return render_template('new_flashcard.html', form=form)
+
+@auth_bp.route('/guest_login')
+def guest_login():
+    guest_user = User.query.filter_by(username='guest').first()
+
+    if not guest_user:
+        guest_user = User(
+            username='guest',
+            email='guest@example.com',
+            password_hash=generate_password_hash('guest123'),
+            role='user'
+        )
+        db.session.add(guest_user)
+        db.session.commit()
+        guest_user.generate_log()
+
+    login_user(guest_user)
+    flash("You are now logged in as a guest.", "info")
+    return redirect(url_for('auth.home'))
+
