@@ -1,10 +1,10 @@
 import math
 from functools import wraps
-from flask import Blueprint, render_template, redirect, url_for, flash, abort, request
+from flask import Blueprint, render_template, redirect, url_for, flash, abort, request, session
 from flask_login import login_user, current_user, login_required, logout_user
 from sqlalchemy import or_
 from werkzeug.security import generate_password_hash, check_password_hash
-from forms import SignUpForm, LoginForm, QuizSearchForm
+from forms import SignUpForm, LoginForm, QuizSearchForm, CreateQuizForm
 from models.database import db, create_user, User, login_manager, Quiz, get_user_by_id, Question
 #, create_question, create_answer
 
@@ -176,6 +176,32 @@ def quizzes():
         quiz_list.sort(key=lambda x: x.created_at, reverse=True)
 
     return render_template("quizzes.html", form=form, quizzes=quiz_list, users=users, pn=page_number, pmax=max_pages, imax=max_items)
+
+@auth_bp.route('/quizzes/create_quiz', methods=['GET', 'POST'])
+def create_quiz():
+    # Load form from session or create new form if no form exists
+    if 'create_quiz_form' not in session: session['create_quiz_form'] = CreateQuizForm().data
+    form = CreateQuizForm(data=session.get('create_quiz_form'))
+
+    if form.is_submitted() and form.change_length.data:
+        # Reload page with new quiz length
+        session['create_quiz_form'] = form.data
+        return redirect(url_for('auth.create_quiz'))
+    elif form.validate_on_submit():
+        # Create new quiz
+
+
+        session.pop('create_quiz_form')
+        return redirect(url_for('auth.quizzes'))
+
+    # Update length of questions field list
+    current_length = len(form.questions)
+    if form.length.data < current_length: form.questions = form.questions[:form.length.data]
+    elif form.length.data > current_length:
+        for _ in range(form.length.data - current_length):
+            form.questions.append_entry()
+
+    return render_template("create_quiz.html", form=form)
 
 # User registration route
 @auth_bp.route('/signup', methods=['GET', 'POST'])

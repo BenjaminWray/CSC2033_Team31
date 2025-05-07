@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField
-from wtforms.validators import DataRequired, Email, EqualTo, Length, Regexp, Optional, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, SelectField, FieldList, FormField, IntegerField
+from wtforms.validators import DataRequired, Email, EqualTo, Length, Regexp, Optional, ValidationError, NumberRange
 
 
 def validate_common_email_domain(form, field):
@@ -87,3 +87,14 @@ class QuizSearchForm(FlaskForm):
     sort_by = SelectField('Sort by:', choices=[('date', 'Date'), ('title', 'Title'), ('user', 'User'), ('question_count', 'Question Count')])
     sort_order = SelectField('Order:', choices=[('desc', 'Descending'), ('asc', 'Ascending')])
     submit = SubmitField('Search')
+
+class QuestionAnswerForm(FlaskForm):
+    question = StringField('Question', validators=[Length(min=1)])
+    answer = StringField('Answer', validators=[Length(min=1)])
+
+class CreateQuizForm(FlaskForm):
+    title = StringField('Title', validators=[Length(min=1)])
+    length = IntegerField('Number of questions', default=1, validators=[DataRequired(), NumberRange(min=1, max=9999)])
+    change_length = SubmitField('Change Quiz Length')
+    questions = FieldList(FormField(QuestionAnswerForm))
+    submit = SubmitField('Create Quiz')

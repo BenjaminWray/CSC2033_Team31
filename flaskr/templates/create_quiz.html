@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form method="POST" action="{{ url_for('auth.create_quiz') }}">
+        {{ form.hidden_tag() }}
+
+        <label>{{ form.title.label }}</label>
+        {{ form.title }}
+
+        <label>{{ form.length.label }}</label>
+        {{ form.length }}
+        {{ form.change_length }}
+
+        {% for qna in form.questions %}
+            <label>{{ qna.form.question.label }}</label>
+            {{ qna.form.question }}
+            <label>{{ qna.form.answer.label }}</label>
+            {{ qna.form.answer }}
+        {% endfor %}
+
+        {{ form.submit }}
+    </form>
+{% endblock %}
