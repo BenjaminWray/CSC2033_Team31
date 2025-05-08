@@ -91,6 +91,8 @@ class QuizSearchForm(FlaskForm):
 class QuestionAnswerForm(FlaskForm):
     question = StringField('Question', validators=[Length(min=1)])
     answer = StringField('Answer', validators=[Length(min=1)])
+    difficulty = SelectField('Difficulty', choices=[('easy', 'Easy'), ('medium', 'Medium'), ('hard', 'Hard')])
+    topic = StringField("Topic", validators=[Length(min=1)])
 
 class CreateQuizForm(FlaskForm):
     title = StringField('Title', validators=[Length(min=1)])

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <form method="POST" action="{{ url_for('auth.create_quiz') }}">
+    <form method="POST" action="{{ url_for('auth.create_new_quiz') }}">
         {{ form.hidden_tag() }}
 
         <label>{{ form.title.label }}</label>
@@ -16,6 +16,10 @@
             {{ qna.form.question }}
             <label>{{ qna.form.answer.label }}</label>
             {{ qna.form.answer }}
+            <label>{{ qna.form.topic.label }}</label>
+            {{ qna.form.topic }}
+            <label>{{ qna.form.difficulty.label }}</label>
+            {{ qna.form.difficulty }}
         {% endfor %}
 
         {{ form.submit }}
