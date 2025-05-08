@@ -311,7 +311,7 @@ def guest_login():
 @auth_bp.route('/quizzes_guest')
 def quizzes_guest():
     quizzes = Quiz.query.all()
-    return render_template('quizzes_guest.html', quizzes=quizzes, guest_mode=True)
+    return render_template('quizzes_guest.html', quizzes=quizzes, guest_mode=True) # Use guest view quiz page
 
 @auth_bp.route('/guest_quiz_attempt/<int:quiz_id>', methods=['GET', 'POST'])
 def guest_quiz_attempt(quiz_id):
@@ -319,18 +319,18 @@ def guest_quiz_attempt(quiz_id):
     questions = quiz.questions
 
     if request.method == 'POST':
-        submitted_answers = request.form.to_dict()
+        submitted_answers = request.form.to_dict() # allowing for guest scoring
         results = []
         score = 0
 
-        for question in questions:
+        for question in questions: # Scoring of guest quiz
             selected = submitted_answers.get(str(question.id))
             correct = next((a for a in question.answers if a.is_correct), None)
             is_correct = str(correct.id) == selected
             if is_correct:
                 score += 1
 
-            results.append({
+            results.append({ # Creating results for view after quiz is complete
                 'question': question.content,
                 'selected': selected,
                 'correct': correct.content,
