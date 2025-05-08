@@ -306,7 +306,7 @@ def flashcards():
     """Display flashcards for a specific topic or all topics."""
     location = request.args.get('location', None)
     if location:
-        questions = Question.query.filter_by(locatioon=location).all()
+        questions = Question.query.filter_by(location=location).all()
     else:
         questions = Question.query.all()
 
