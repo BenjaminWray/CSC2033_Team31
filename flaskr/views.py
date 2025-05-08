@@ -126,7 +126,10 @@ def change_username():
 @auth_bp.route('/leaderboard')
 @login_required
 def leaderboard():
-    return render_template("leaderboard.html")
+    top_users = User.query.order_by(User.results.desc()).limit(20).all()
+
+
+    return render_template("leaderboard.html" , top_users =top_users)
 
 @auth_bp.route('/quizzes', methods=['GET', 'POST'])
 def quizzes():
@@ -209,6 +212,20 @@ def create_new_quiz():
 
     return render_template("create_new_quiz.html", form=form)
 
+    # Optionally, update leaderboard or other relevant stats
+    leaderboard = Leaderboard.query.filter_by(user_id=user.id).first()
+    if leaderboard:
+        leaderboard.total_score += total_score
+        leaderboard.quizzes_completed += 1
+        leaderboard.average_time = (
+                (leaderboard.average_time * (leaderboard.quizzes_completed - 1) + int(time_taken))
+                / leaderboard.quizzes_completed
+        )
+
+        db.session.commit()
+
+    flash(f"Your score is {total_score}!", "success")
+    return redirect(url_for('auth.quiz_history'))
 # User registration route
 @auth_bp.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -339,3 +356,36 @@ def guest_login():
     flash("You are now logged in as a guest.", "info")
     return redirect(url_for('auth.home'))
 
+
+@auth_bp.route('/quizzes_guest')
+def quizzes_guest():
+    quizzes = Quiz.query.all()
+    return render_template('quizzes_guest.html', quizzes=quizzes, guest_mode=True) # Use guest view quiz page
+
+@auth_bp.route('/guest_quiz_attempt/<int:quiz_id>', methods=['GET', 'POST'])
+def guest_quiz_attempt(quiz_id):
+    quiz = Quiz.query.get_or_404(quiz_id)
+    questions = quiz.questions
+
+    if request.method == 'POST':
+        submitted_answers = request.form.to_dict() # allowing for guest scoring
+        results = []
+        score = 0
+
+        for question in questions: # Scoring of guest quiz
+            selected = submitted_answers.get(str(question.id))
+            correct = next((a for a in question.answers if a.is_correct), None)
+            is_correct = str(correct.id) == selected
+            if is_correct:
+                score += 1
+
+            results.append({ # Creating results for view after quiz is complete
+                'question': question.content,
+                'selected': selected,
+                'correct': correct.content,
+                'is_correct': is_correct
+            })
+
+        return render_template('guest_quiz_results.html', results=results, score=score, total=len(questions))
+
+    return render_template('guest_quiz_attempt.html', quiz=quiz, questions=questions)

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Results</h1>
+<p>Your Score: {{ score }} / {{ total }}</p>
+
+<div class="results">
+  {% for result in results %}
+    <div class="result-block">
+      <p><strong>{{ loop.index }}. {{ result.question }}</strong></p>
+      <p>Your Answer: {{ result.selected }}</p>
+      <p>Correct Answer: {{ result.correct }}</p>
+      {% if result.is_correct %}
+        <p class="text-success">Correct</p>
+      {% else %}
+        <p class="text-danger">Incorrect</p>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+<div class="alert alert-warning mt-4">
+  <p><strong>Note:</strong> Your results were not saved. <a href="{{ url_for('auth.login') }}">Sign in</a> to keep track of your scores.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Available Quizzes</h1>
+
+{% if quizzes %}
+  <ul class="quiz-list">
+    {% for quiz in quizzes %}
+      <li>
+        <h3>{{ quiz.title }}</h3>
+        <p><strong>Area:</strong> {{ quiz.area }}</p>
+        <a href="{{ url_for('auth.guest_quiz_attempt', quiz_id=quiz.id) }}" class="btn btn-primary">Take Quiz</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No quizzes available.</p>
+{% endif %}
+
+{% if guest_mode %}
+  <div class="alert alert-info mt-4">
+    <p>You are viewing quizzes as a guest. You can take quizzes, but your scores will not be saved.</p>
+  </div>
+{% endif %}
+{% endblock %}

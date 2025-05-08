@@ -23,9 +23,13 @@ class User(db.Model, UserMixin):
     results = db.relationship('QuizResult', backref='user', lazy=True)
     role = db.Column(db.String(20), nullable=False, default="user")  # Role (e.g., "user", "admin")
     is_active = db.Column(db.Boolean, nullable=False, default=True)  # Whether the account is active
-    firstname = db.Column(db.String(100), nullable=False)
-    lastname = db.Column(db.String(100), nullable=False)
-    time_joined = db.Column(db.DateTime, nullable=False)
+
+
+    # Add the relationship between log and user
+    # This is a one-to-one relationship
+    log = db.relationship("Log", back_populates="user", uselist=False)
+
+    
 
     log = db.relationship("Log", back_populates="user")
 
@@ -40,6 +44,7 @@ class User(db.Model, UserMixin):
         self.firstname = firstname
         self.lastname = lastname
         self.time_joined = datetime.now()
+
 
     def generate_log(self):
         log_entry = Log(userid=self.id)
