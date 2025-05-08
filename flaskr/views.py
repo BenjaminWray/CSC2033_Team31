@@ -304,9 +304,9 @@ def logout():
 @login_required
 def flashcards():
     """Display flashcards for a specific topic or all topics."""
-    location = request.args.get('location', None)
-    if location:
-        questions = Question.query.filter_by(locatioon=location).all()
+    topic = request.args.get('location', None)
+    if topic:
+        questions = Question.query.filter_by(topic=topic).all()
     else:
         questions = Question.query.all()
 
