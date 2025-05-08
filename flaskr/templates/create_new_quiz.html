@@ -1,27 +1,41 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <form method="POST" action="{{ url_for('auth.create_new_quiz') }}">
-        {{ form.hidden_tag() }}
+    <div class="create-new-quiz-container">
+        <h2>Create New Quiz</h2>
 
-        <label>{{ form.title.label }}</label>
-        {{ form.title }}
+        <form class="create-quiz-form" method="POST" action="{{ url_for('auth.create_new_quiz') }}">
+            {{ form.hidden_tag() }}
 
-        <label>{{ form.length.label }}</label>
-        {{ form.length }}
-        {{ form.change_length }}
+            <div class="input-container">
+                <label>{{ form.title.label }}</label>
+                {{ form.title }}
+            </div>
 
-        {% for qna in form.questions %}
-            <label>{{ qna.form.question.label }}</label>
-            {{ qna.form.question }}
-            <label>{{ qna.form.answer.label }}</label>
-            {{ qna.form.answer }}
-            <label>{{ qna.form.topic.label }}</label>
-            {{ qna.form.topic }}
-            <label>{{ qna.form.difficulty.label }}</label>
-            {{ qna.form.difficulty }}
-        {% endfor %}
+            <div class="quiz-length-container">
+                <label>{{ form.length.label }}</label>
+                {{ form.length }}
+                {{ form.change_length }}
+            </div>
 
-        {{ form.submit }}
-    </form>
+            <div class="question-form-list">
+                {% for qna in form.questions %}
+                    <div class="question-form-container">
+                        <label>{{ qna.form.question.label }}</label>
+                        {{ qna.form.question }}
+                        <label>{{ qna.form.answer.label }}</label>
+                        {{ qna.form.answer }}
+                        <label>{{ qna.form.topic.label }}</label>
+                        {{ qna.form.topic }}
+                        <label>{{ qna.form.difficulty.label }}</label>
+                        {{ qna.form.difficulty }}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="input-container">
+                {{ form.submit }}
+            </div>
+        </form>
+    </div>
 {% endblock %}

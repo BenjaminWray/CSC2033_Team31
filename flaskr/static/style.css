@@ -292,6 +292,65 @@ form input:focus {
   color: blue;
 }
 
+/* ========= CREATE QUIZ PAGE ========= */
+
+.create-new-quiz-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+}
+
+.create-new-quiz-container h2 {
+  margin-bottom: -10px;
+}
+
+.create-quiz-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px;
+  padding: 10px;
+  width: 800px;
+}
+
+.input-container {
+  width: 800px;
+  margin: 10px 0;
+}
+
+.quiz-length-container {
+  display: inline-grid;
+  justify-content: space-between;
+  grid-template-columns: 0.9fr 0.5fr 2fr;
+  column-gap: 10px;
+  width: 800px;
+}
+
+.question-form-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 700px;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.question-form-container {
+  display: flex;
+  flex-direction: column;
+  background: aliceblue;
+  border: 2px solid darkblue;
+  border-radius: 15px;
+  width: inherit;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.question-form-container select {
+  width: fit-content;
+}
+
 /* ========= ERROR MESSAGES ========= */
 .error-message {
   color: red;
