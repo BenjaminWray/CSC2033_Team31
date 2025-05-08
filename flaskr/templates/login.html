@@ -19,6 +19,8 @@
           <p class="error-message">{{ error }}</p>
         {% endfor %}
 
+        <div class="form-group">{{form.recaptcha}}</div>
+
         {{ form.submit(class="signup-button") }}
     </form>
 
