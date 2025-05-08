@@ -224,13 +224,11 @@ def delete_answer(answer_id):
     return answer
 
 # CRUD operations for User
-def create_user(username, email, password_hash, firstname, lastname, phone_number=None, location=None, role="user", is_active=True):
+def create_user(username, email, password_hash, phone_number=None, location=None, role="user", is_active=True):
     user = User(
         username=username,
         email=email,
         password_hash=password_hash,
-        firstname=firstname,
-        lastname=lastname,
         phone_number=phone_number,
         location=location,
         role=role,
