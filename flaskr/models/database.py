@@ -52,7 +52,7 @@ class User(db.Model, UserMixin):
 
 class Quiz(db.Model):
     __tablename__ = 'quizzes'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     title = db.Column(db.String(255), nullable=False)
     questions = db.relationship('Question', backref='quiz', lazy=True)
@@ -159,6 +159,13 @@ class LeaderboardView(ModelView):
     column_hide_backrefs = False
     column_list = (
         'id', 'userid', 'total_score', 'quizzes_completed', 'average_time', 'last_updated')
+
+# CRUD operations for Quizzes
+def create_quiz(title, user_id):
+    quiz = Quiz(title=title, user_id=user_id)
+    db.session.add(quiz)
+    db.session.commit()
+    return quiz
 
 # CRUD operations for Questions
 def create_question(quiz_id, content, difficulty, topic):

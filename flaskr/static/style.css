@@ -217,6 +217,21 @@ form input:focus {
   all: revert;
 }
 
+.create-quiz-button {
+  border: 3px solid darkolivegreen;
+  border-radius: 15px;
+  background: aliceblue;
+  width: 600px;
+  line-height: 5px;
+  margin-bottom: 20px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.create-quiz-button:hover {
+  border-color: forestgreen;
+}
+
 .quiz-search {
   display: flex;
   flex-direction: row;
@@ -275,6 +290,70 @@ form input:focus {
 
 .pagination a {
   color: blue;
+}
+
+/* ========= CREATE QUIZ PAGE ========= */
+
+.create-new-quiz-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+}
+
+.create-new-quiz-container h2 {
+  margin-bottom: -10px;
+}
+
+.create-quiz-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px;
+  padding: 10px;
+  width: 800px;
+}
+
+.input-container {
+  width: 800px;
+  margin: 10px 0;
+}
+
+.quiz-length-container {
+  display: inline-grid;
+  justify-content: space-between;
+  grid-template-columns: 0.6fr 0.4fr 2fr;
+  column-gap: 15px;
+  width: 800px;
+  line-height: 2.25;
+}
+
+.question-form-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 700px;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.question-form-container {
+  display: flex;
+  flex-direction: column;
+  background: aliceblue;
+  border: 2px solid darkblue;
+  border-radius: 15px;
+  width: inherit;
+  padding: 15px;
+  margin: 10px 0;
+}
+
+.question-form-container * {
+  margin: 2px 0;
+}
+
+.question-form-container select {
+  width: fit-content;
 }
 
 /* ========= ERROR MESSAGES ========= */

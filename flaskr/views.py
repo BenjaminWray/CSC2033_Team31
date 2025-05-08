@@ -1,13 +1,14 @@
 import math
 from functools import wraps
-from flask import Blueprint, render_template, redirect, url_for, flash, abort, request
+from flask import Blueprint, render_template, redirect, url_for, flash, abort, request, session
 from flask_login import login_user, current_user, login_required, logout_user
 from sqlalchemy import or_
 from werkzeug.security import generate_password_hash, check_password_hash
-from forms import SignUpForm, LoginForm, QuizSearchForm
-from models.database import db, create_user, User, login_manager, Quiz, get_user_by_id, Question
 from models.database import Leaderboard
 from sqlalchemy.orm import joinedload
+from forms import SignUpForm, LoginForm, QuizSearchForm, CreateQuizForm
+from models.database import db, create_user, User, login_manager, Quiz, get_user_by_id, Question, create_quiz, \
+    create_question, create_answer
 #, create_question, create_answer
 
 auth_bp = Blueprint('auth', __name__)
@@ -182,40 +183,36 @@ def quizzes():
         quiz_list.sort(key=lambda x: x.created_at, reverse=True)
 
     return render_template("quizzes.html", form=form, quizzes=quiz_list, users=users, pn=page_number, pmax=max_pages, imax=max_items)
-@auth_bp.route('/submitquiz',methods=['POST'])
+
+# Quiz creation route
+@auth_bp.route('/quizzes/create_new_quiz', methods=['GET', 'POST'])
 @login_required
-def submit_quiz():
-    quiz_id = request.form.get('quiz_id')
-    user_id = current_user.id
-    quiz = Quiz.query.get(quiz_id)
-    if not quiz:
-        flash("Quiz not found.", "danger")
-        return redirect(url_for('auth.home'))
+def create_new_quiz():
+    # Load form from session or create new form if no form exists
+    if 'create_quiz_form' not in session: session['create_quiz_form'] = CreateQuizForm().data
+    form = CreateQuizForm(data=session.get('create_quiz_form'))
 
-    total_score = 0
-    time_taken = request.form.get('time_taken')  # Time taken for the quiz in seconds
-    answers = request.form.getlist('answers')  # List of selected answers for each question
+    if form.is_submitted() and form.change_length.data:
+        # Reload page with new quiz length
+        session['create_quiz_form'] = form.data
+        return redirect(url_for('auth.create_new_quiz'))
+    elif form.validate_on_submit():
+        # Create new quiz
+        quiz = create_quiz(form.title.data, current_user.id)
+        for qna in form.questions:
+            question = create_question(quiz_id=quiz.id, content=qna.form.question.data, difficulty=qna.form.difficulty.data, topic=qna.form.topic.data)
+            create_answer(question.id, qna.form.answer.data)
+        session.pop('create_quiz_form')
+        return redirect(url_for('auth.quizzes'))
 
-    # Calculate the score based on the answers
-    for answer_id in answers:
-        answer = Answer.query.get(answer_id)
-        if answer and answer.is_correct:
-            total_score += 1  # Award 1 point per correct answer
+    # Update length of questions field list
+    current_length = len(form.questions)
+    if form.length.data < current_length: form.questions = form.questions[:form.length.data]
+    elif form.length.data > current_length:
+        for _ in range(form.length.data - current_length):
+            form.questions.append_entry()
 
-    # Create a QuizResult entry
-    quiz_result = QuizResult(
-        quiz_id=quiz_id,
-        user_id=user_id,
-        score=total_score,
-        time_taken=time_taken
-    )
-    db.session.add(quiz_result)
-    db.session.commit()
-
-    # Update the User's points based on the quiz score
-    user = User.query.get(user_id)
-    user.results += total_score  # Add the score to the user's total points
-    db.session.commit()
+    return render_template("create_new_quiz.html", form=form)
 
     # Optionally, update leaderboard or other relevant stats
     leaderboard = Leaderboard.query.filter_by(user_id=user.id).first()
@@ -361,3 +358,36 @@ def guest_login():
     flash("You are now logged in as a guest.", "info")
     return redirect(url_for('auth.home'))
 
+
+@auth_bp.route('/quizzes_guest')
+def quizzes_guest():
+    quizzes = Quiz.query.all()
+    return render_template('quizzes_guest.html', quizzes=quizzes, guest_mode=True) # Use guest view quiz page
+
+@auth_bp.route('/guest_quiz_attempt/<int:quiz_id>', methods=['GET', 'POST'])
+def guest_quiz_attempt(quiz_id):
+    quiz = Quiz.query.get_or_404(quiz_id)
+    questions = quiz.questions
+
+    if request.method == 'POST':
+        submitted_answers = request.form.to_dict() # allowing for guest scoring
+        results = []
+        score = 0
+
+        for question in questions: # Scoring of guest quiz
+            selected = submitted_answers.get(str(question.id))
+            correct = next((a for a in question.answers if a.is_correct), None)
+            is_correct = str(correct.id) == selected
+            if is_correct:
+                score += 1
+
+            results.append({ # Creating results for view after quiz is complete
+                'question': question.content,
+                'selected': selected,
+                'correct': correct.content,
+                'is_correct': is_correct
+            })
+
+        return render_template('guest_quiz_results.html', results=results, score=score, total=len(questions))
+
+    return render_template('guest_quiz_attempt.html', quiz=quiz, questions=questions)
