@@ -3,17 +3,16 @@
 {% block content %}
 <h1>Flashcards</h1>
 
-<!-- Topic Selection -->
-<div class="topic-selection">
+<!-- Location Selection -->
+<div class="location-selection">
     <form method="GET" action="{{ url_for('auth.flashcards') }}">
-        <label for="topic">Choose a topic:</label>
-        <select name="topic" id="topic" onchange="this.form.submit()">
-            <option value="">All Topics</option>
-            {% for topic in topics %}
-                <option value="{{ topic }}" {% if request.args.get('topic') == topic %}selected{% endif %}>
-                    {{ topic }}
-                </option>
-            {% endfor %}
+        <label for="location">Choose a location:</label>
+        <select name="location" id="location" onchange="this.form.submit()">
+            <option value="">All Locations</option>
+            <option value="edinburgh" {% if request.args.get('location') == 'edinburgh' %}selected{% endif %}>Edinburgh, UK</option>
+            <option value="manchester" {% if request.args.get('location') == 'manchester' %}selected{% endif %}>Manchester, UK</option>
+            <option value="newcastle" {% if request.args.get('location') == 'newcastle' %}selected{% endif %}>Newcastle, UK</option>
+            <option value="london" {% if request.args.get('location') == 'london' %}selected{% endif %}>London, UK</option>
         </select>
     </form>
 </div>
@@ -29,14 +28,14 @@
     <!-- Navigation Buttons -->
     <div class="navigation-buttons">
         {% if current_index > 0 %}
-            <a href="{{ url_for('auth.flashcards', topic=request.args.get('topic'), index=current_index-1) }}" class="btn">Previous</a>
+            <a href="{{ url_for('auth.flashcards', location=request.args.get('location'), index=current_index-1) }}" class="btn">Previous</a>
         {% endif %}
         {% if current_index < questions|length - 1 %}
-            <a href="{{ url_for('auth.flashcards', topic=request.args.get('topic'), index=current_index+1) }}" class="btn">Next</a>
+            <a href="{{ url_for('auth.flashcards', location=request.args.get('location'), index=current_index+1) }}" class="btn">Next</a>
         {% endif %}
     </div>
 {% else %}
-    <p>No flashcards available for this topic.</p>
+    <p>No flashcards available for this location.</p>
 {% endif %}
 
 <script>
