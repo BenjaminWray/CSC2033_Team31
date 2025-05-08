@@ -52,7 +52,7 @@ def reg_email(user_email):
 
 # send a user an email when they've been overtaken on the leaderboard
 def overtake_email(user, overtaker):
-    # intialise the subject and body with preset strings
+    # initialise the subject and body with preset strings
     subject = "leaderboard position"
     body = (f"Oh no, we're sorry to say that user {overtaker.username} has overtaken you on the leaderboard.\nHowever "
             "it's not too late to take your position back just attempt another quiz now.\nFrom the III Insight team")
