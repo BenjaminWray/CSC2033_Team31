@@ -6,6 +6,8 @@ from sqlalchemy import or_
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import SignUpForm, LoginForm, QuizSearchForm
 from models.database import db, create_user, User, login_manager, Quiz, get_user_by_id, Question
+from models.database import Leaderboard
+from sqlalchemy.orm import joinedload
 #, create_question, create_answer
 
 auth_bp = Blueprint('auth', __name__)
@@ -120,14 +122,15 @@ def change_username():
     db.session.commit()
     return render_account_page(message="Username updated successfully!")
 
-
 @auth_bp.route('/leaderboard')
 @login_required
 def leaderboard():
-    top_users = User.query.order_by(User.results.desc()).limit(20).all()
+    top_users = Leaderboard.query.options(joinedload(Leaderboard.user)) \
+        .order_by(Leaderboard.total_score.desc()) \
+            .limit(20).all()
 
+    return render_template("leaderboard.html", top_users=top_users)
 
-    return render_template("leaderboard.html" , top_users =top_users)
 
 @auth_bp.route('/quizzes', methods=['GET', 'POST'])
 def quizzes():

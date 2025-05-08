@@ -18,6 +18,7 @@
                     <td>{{ user.username }}</td>
                     <td>{{ user.results }}</td>
                 </tr>
+                <p>{{ loop.index }}. {{ entry.user.username }} - Score: {{ entry.total_score }} - Quizzes: {{ entry.quizzes_completed }}</p>
             {% endfor %}
         </tbody>
     </table>

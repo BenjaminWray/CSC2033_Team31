@@ -103,6 +103,7 @@ class Leaderboard(db.Model):
     total_score = db.Column(db.Integer, nullable=False, default=0)
     quizzes_completed = db.Column(db.Integer, nullable=False, default=0)
     average_time = db.Column(db.Float, nullable=False, default=0)
+    user = db.relationship('User', backref='leaderboard_entry', lazy=True)
     last_updated = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
 
 #configure a log class
