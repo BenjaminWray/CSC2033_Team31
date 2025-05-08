@@ -10,6 +10,7 @@ from forms import SignUpForm, LoginForm, QuizSearchForm, CreateQuizForm
 from models.database import db, create_user, User, login_manager, Quiz, get_user_by_id, Question, create_quiz, \
     create_question, create_answer
 #, create_question, create_answer
+from mail import reg_email
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -258,6 +259,8 @@ def signup():
         # Create log entry
         new_user.generate_log()
         db.session.commit()
+        # send a registration email to the users email address
+        reg_email(form.email.data)
 
         flash('Account created successfully. You are now logged in.', 'success')
         return redirect(url_for('auth.home'))

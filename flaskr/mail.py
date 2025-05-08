@@ -38,7 +38,7 @@ def send_email(reciever_email, subject, body):
 
 
 # send a user a registration email using the send_email method
-def reg_email(user):
+def reg_email(user_email):
     # initialise the subject and body of the email to preset strings
     subject = "User registration"
     body = ("Thank you for Registering an account with III Insight.\nWe look forward to helping you improve your "
@@ -47,12 +47,12 @@ def reg_email(user):
             "soon.\nFrom the III Insight team.")
 
     # send the email using the previous method
-    send_email(user.email, subject, body)
+    send_email(user_email, subject, body)
 
 
 # send a user an email when they've been overtaken on the leaderboard
 def overtake_email(user, overtaker):
-    # intialise the subject and body with preset strings
+    # initialise the subject and body with preset strings
     subject = "leaderboard position"
     body = (f"Oh no, we're sorry to say that user {overtaker.username} has overtaken you on the leaderboard.\nHowever "
             "it's not too late to take your position back just attempt another quiz now.\nFrom the III Insight team")
