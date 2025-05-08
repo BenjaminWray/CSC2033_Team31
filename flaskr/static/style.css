@@ -217,6 +217,21 @@ form input:focus {
   all: revert;
 }
 
+.create-quiz-button {
+  border: 3px solid darkolivegreen;
+  border-radius: 15px;
+  background: aliceblue;
+  width: 300px;
+  line-height: 5px;
+  margin: 20px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.create-quiz-button:hover {
+  border-color: forestgreen;
+}
+
 .quiz-search {
   display: flex;
   flex-direction: row;

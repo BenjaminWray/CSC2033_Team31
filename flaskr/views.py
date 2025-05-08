@@ -207,7 +207,7 @@ def create_new_quiz():
         for _ in range(form.length.data - current_length):
             form.questions.append_entry()
 
-    return render_template("create_quiz.html", form=form)
+    return render_template("create_new_quiz.html", form=form)
 
 # User registration route
 @auth_bp.route('/signup', methods=['GET', 'POST'])

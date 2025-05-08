@@ -1,25 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="quizzes-container">
-        <h2>Quizzes</h2>
+        <h1>Quizzes</h1>
+
+        <a class="create-quiz-button" href="{{ url_for('auth.create_new_quiz') }}">
+            <h2>Create Quiz</h2>
+        </a>
+
         <form method="POST">
             {{ form.hidden_tag() }}
 
             <div class="quiz-search">
-                <div>
-                    <label>{{ form.search_by.label }}</label>
-                    {{ form.search_by }}
-
-                    <label>{{ form.search_query }}</label>
-                    {{ form.submit() }}
-                </div>
-
                 <div>
                     <label>{{ form.sort_by.label }}</label>
                     {{ form.sort_by }}
 
                     <label>{{ form.sort_order.label }}</label>
                     {{ form.sort_order }}
+                </div>
+
+                 <div>
+                    <label>{{ form.search_by.label }}</label>
+                    {{ form.search_by }}
+
+                    <label>{{ form.search_query }}</label>
+                    {{ form.submit() }}
                 </div>
             </div>
         </form>
