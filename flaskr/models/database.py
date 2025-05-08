@@ -29,10 +29,6 @@ class User(db.Model, UserMixin):
     # This is a one-to-one relationship
     log = db.relationship("Log", back_populates="user", uselist=False)
 
-    
-
-    log = db.relationship("Log", back_populates="user")
-
     def __init__(self, username, email, password_hash, phone_number=None, location=None, role="user", is_active=True, firstname=None, lastname=None):
         self.username = username
         self.email = email
