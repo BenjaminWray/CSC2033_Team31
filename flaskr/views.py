@@ -185,6 +185,38 @@ def quizzes():
 
     return render_template("quizzes.html", form=form, quizzes=quiz_list, users=users, pn=page_number, pmax=max_pages, imax=max_items)
 
+
+@auth_bp.route('/quizzes/<int:quiz_id>', methods=['GET', 'POST'])
+@login_required
+def quiz_detail(quiz_id):
+    quiz = Quiz.query.get_or_404(quiz_id)
+    questions = quiz.questions
+
+    if request.method == 'POST':
+        submitted = request.form.to_dict()
+        score = 0
+        results = []
+
+        for q in questions:
+            user_input = submitted.get(str(q.id), "").strip().lower()
+            correct = next((a for a in q.answers if a.is_correct), None)
+            correct_answer_text = correct.content.strip().lower() if correct else ''
+            is_correct = user_input == correct_answer_text
+
+            if is_correct:
+                score += 1
+
+            results.append({
+                'question': q.content,
+                'selected': user_input,
+                'correct': correct.content if correct else '',
+                'is_correct': is_correct
+            })
+
+        return render_template('quiz_result.html', quiz=quiz, results=results, score=score, total=len(questions))
+
+    return render_template('quiz_detail.html', quiz=quiz, questions=questions)
+
 # Quiz creation route
 @auth_bp.route('/quizzes/create_new_quiz', methods=['GET', 'POST'])
 @login_required
@@ -201,8 +233,10 @@ def create_new_quiz():
         # Create new quiz
         quiz = create_quiz(form.title.data, current_user.id)
         for qna in form.questions:
-            question = create_question(quiz_id=quiz.id, content=qna.form.question.data, difficulty=qna.form.difficulty.data, topic=qna.form.topic.data)
-            create_answer(question.id, qna.form.answer.data)
+            question = create_question(quiz_id=quiz.id, content=qna.form.question.data,
+                                       difficulty=qna.form.difficulty.data, topic=qna.form.topic.data)
+            create_answer(question_id=question.id, content=qna.form.answer.data, is_correct=True)
+
         session.pop('create_quiz_form')
         return redirect(url_for('auth.quizzes'))
 

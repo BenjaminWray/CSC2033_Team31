@@ -21,7 +21,7 @@
                     {{ form.sort_order }}
                 </div>
 
-                 <div>
+                <div>
                     <label>{{ form.search_by.label }}</label>
                     {{ form.search_by }}
 
@@ -34,15 +34,15 @@
         <div class="quiz-list">
             {% if quizzes | length > 0 %}
                 {% for quiz in quizzes %}
-                    <a href="/quizzes/{{ quiz.id }}">
-                        <div class="quiz-button">
+                    <div class="quiz-button">
+                        <a href="{{ url_for('auth.quiz_detail', quiz_id=quiz.id) }}">
                             <h1>{{ quiz.title }}</h1>
                             <p>created by {{ users[quiz].username }} at {{ quiz.created_at }}</p>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
                 {% endfor %}
             {% else %}
-                No results.
+                <p>No results.</p>
             {% endif %}
         </div>
 

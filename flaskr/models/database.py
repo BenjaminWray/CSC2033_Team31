@@ -102,6 +102,8 @@ class Leaderboard(db.Model):
     user = db.relationship('User', backref='leaderboard_entry', lazy=True)
     last_updated = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
 
+
+
 #configure a log class
 class Log(db.Model):
     __tablename__ = 'logs'
