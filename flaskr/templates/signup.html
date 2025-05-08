@@ -18,18 +18,6 @@
     <p class="error-message">{{ error }}</p>
     {% endfor %}
 
-    <label>{{ form.firstname.label }}</label>
-    {{ form.firstname(size=32) }}
-    {% for error in form.firstname.errors %}
-    <p class="error-message">{{ error }}</p>
-    {% endfor %}
-
-    <label>{{ form.lastname.label }}</label>
-    {{ form.lastname(size=32) }}
-    {% for error in form.lastname.errors %}
-    <p class="error-message">{{ error }}</p>
-    {% endfor %}
-
     <label>{{ form.phone_number.label }}</label>
     {{ form.phone_number(
         size=32,

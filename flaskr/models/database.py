@@ -23,9 +23,6 @@ class User(db.Model, UserMixin):
     results = db.relationship('QuizResult', backref='user', lazy=True)
     role = db.Column(db.String(20), nullable=False, default="user")  # Role (e.g., "user", "admin")
     is_active = db.Column(db.Boolean, nullable=False, default=True)  # Whether the account is active
-    firstname = db.Column(db.String(100), nullable=False)
-    lastname = db.Column(db.String(100), nullable=False)
-    time_joined = db.Column(db.DateTime, nullable=False)
 
     log = db.relationship("Log", back_populates="user")
 

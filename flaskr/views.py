@@ -200,8 +200,6 @@ def signup():
             username=form.username.data,
             email=form.email.data,
             password_hash=hashed_password,
-            firstname=form.firstname.data,  # Collect firstname from the form
-            lastname=form.lastname.data,    # Collect lastname from the form
             phone_number=form.phone_number.data,
             location=form.location.data
         )
