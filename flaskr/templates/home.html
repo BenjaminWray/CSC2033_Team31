@@ -5,6 +5,8 @@
         <div class="home-content">
             {% if current_user.username %}
                 <h1>Welcome, {{ current_user.username }}</h1>
+            {% else %}
+                <h1>Welcome, Guest</h1>
             {% endif %}
 
             <div class="home-grid-container">
