@@ -163,6 +163,20 @@ def create_quiz(title, user_id):
     db.session.commit()
     return quiz
 
+def delete_quiz(quiz_id):
+    quiz = get_quiz_by_id(quiz_id)
+    for question in quiz.questions:
+        for answer in question.answers:
+            db.session.delete(answer)
+        db.session.delete(question)
+    if quiz:
+        db.session.delete(quiz)
+        db.session.commit()
+    return quiz
+
+def get_quiz_by_id(quiz_id):
+    return db.session.get(Quiz, quiz_id)
+
 # CRUD operations for Questions
 def create_question(quiz_id, content, difficulty, topic):
     question = Question(quiz_id=quiz_id, content=content, difficulty=difficulty, topic=topic)

@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, abort, r
 from flask_login import login_user, current_user, login_required, logout_user
 from sqlalchemy import or_
 from werkzeug.security import generate_password_hash, check_password_hash
-from models.database import Leaderboard
+from models.database import Leaderboard, delete_quiz, get_quiz_by_id
 from sqlalchemy.orm import joinedload
 from forms import SignUpForm, LoginForm, QuizSearchForm, CreateQuizForm
 from models.database import db, create_user, User, login_manager, Quiz, get_user_by_id, Question, create_quiz, \
@@ -229,6 +229,14 @@ def create_new_quiz():
 
     flash(f"Your score is {total_score}!", "success")
     return redirect(url_for('auth.quiz_history'))
+
+@auth_bp.route('/quizzes/<int:quiz_id>/delete', methods=['GET', 'POST'])
+@login_required
+def quiz_delete(quiz_id):
+    if current_user.id == get_quiz_by_id(quiz_id).user_id:
+        delete_quiz(quiz_id)
+    return redirect(url_for('auth.quizzes'))
+
 # User registration route
 @auth_bp.route('/signup', methods=['GET', 'POST'])
 def signup():
