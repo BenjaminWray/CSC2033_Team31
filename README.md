@@ -18,8 +18,6 @@ Users will be able to take quizzes and study using the flashcards regardless of 
 - Users with accounts can save quiz results and place on a leaderboard.
 - When registering for an account users will be able to input their location for flashcards specific to them.
 
-## Background
-
 ## Set-Up
 ### Prerequisites
 - Python 3.x
