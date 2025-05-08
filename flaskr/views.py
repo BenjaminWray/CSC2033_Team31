@@ -101,7 +101,7 @@ def leaderboard():
     top_users = User.query.order_by(User.results.desc()).limit(20).all()
 
 
-    return render_template("leaderboard.html")
+    return render_template("leaderboard.html" , top_users =top_users)
 
 @auth_bp.route('/quizzes', methods=['GET', 'POST'])
 def quizzes():

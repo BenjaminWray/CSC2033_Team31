@@ -1,4 +1,41 @@
 {% extends "base.html" %}
+
 {% block content %}
-    <h2 style="text-align: center;">Leaderboard</h2>
+<div class="Leaderboard-container">
+    <h2 class="signup-title">Leaderboard</h2>
+    <table class="leaderboard-table">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Username</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in top_users %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.results }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
 {% endblock %}
