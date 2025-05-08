@@ -304,11 +304,16 @@ def logout():
 @login_required
 def flashcards():
     """Display flashcards for a specific topic or all topics."""
-    topic = request.args.get('topic', None)
-    if topic:
-        questions = Question.query.filter_by(topic=topic).all()
+    location = request.args.get('location', None)
+    if location:
+        questions = Question.query.filter_by(locatioon=location).all()
     else:
         questions = Question.query.all()
+
+    # Default to the first flashcard
+    current_index = int(request.args.get('index', 0))
+    current_index = max(0, min(current_index, len(questions) - 1))
+    
     return render_template('flashcards.html', questions=questions)
 
 
