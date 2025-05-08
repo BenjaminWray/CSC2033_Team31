@@ -98,6 +98,9 @@ def quiz_history():
 @auth_bp.route('/leaderboard')
 @login_required
 def leaderboard():
+    top_users = User.query.order_by(User.results.desc()).limit(20).all()
+
+
     return render_template("leaderboard.html")
 
 @auth_bp.route('/quizzes', methods=['GET', 'POST'])
@@ -150,7 +153,55 @@ def quizzes():
         quiz_list.sort(key=lambda x: x.created_at, reverse=True)
 
     return render_template("quizzes.html", form=form, quizzes=quiz_list, users=users, pn=page_number, pmax=max_pages, imax=max_items)
+@auth_bp.route('/submitquiz',methods=['POST'])
+@login_required
+def submit_quiz():
+    quiz_id = request.form.get('quiz_id')
+    user_id = current_user.id
+    quiz = Quiz.query.get(quiz_id)
+    if not quiz:
+        flash("Quiz not found.", "danger")
+        return redirect(url_for('auth.home'))
 
+    total_score = 0
+    time_taken = request.form.get('time_taken')  # Time taken for the quiz in seconds
+    answers = request.form.getlist('answers')  # List of selected answers for each question
+
+    # Calculate the score based on the answers
+    for answer_id in answers:
+        answer = Answer.query.get(answer_id)
+        if answer and answer.is_correct:
+            total_score += 1  # Award 1 point per correct answer
+
+    # Create a QuizResult entry
+    quiz_result = QuizResult(
+        quiz_id=quiz_id,
+        user_id=user_id,
+        score=total_score,
+        time_taken=time_taken
+    )
+    db.session.add(quiz_result)
+    db.session.commit()
+
+    # Update the User's points based on the quiz score
+    user = User.query.get(user_id)
+    user.results += total_score  # Add the score to the user's total points
+    db.session.commit()
+
+    # Optionally, update leaderboard or other relevant stats
+    leaderboard = Leaderboard.query.filter_by(user_id=user.id).first()
+    if leaderboard:
+        leaderboard.total_score += total_score
+        leaderboard.quizzes_completed += 1
+        leaderboard.average_time = (
+                (leaderboard.average_time * (leaderboard.quizzes_completed - 1) + int(time_taken))
+                / leaderboard.quizzes_completed
+        )
+
+        db.session.commit()
+
+    flash(f"Your score is {total_score}!", "success")
+    return redirect(url_for('auth.quiz_history'))
 # User registration route
 @auth_bp.route('/signup', methods=['GET', 'POST'])
 def signup():

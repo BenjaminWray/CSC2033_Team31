@@ -24,6 +24,7 @@ class User(db.Model, UserMixin):
     role = db.Column(db.String(20), nullable=False, default="user")  # Role (e.g., "user", "admin")
     is_active = db.Column(db.Boolean, nullable=False, default=True)  # Whether the account is active
 
+
     # Add the relationship between log and user
     # This is a one-to-one relationship
     log = db.relationship("Log", back_populates="user", uselist=False)

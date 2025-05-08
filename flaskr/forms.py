@@ -22,3 +22,4 @@ class QuizSearchForm(FlaskForm):
     sort_by = SelectField('Sort by:', choices=[('date', 'Date'), ('title', 'Title'), ('user', 'User'), ('question_count', 'Question Count')])
     sort_order = SelectField('Order:', choices=[('desc', 'Descending'), ('asc', 'Ascending')])
     submit = SubmitField('Search')
+

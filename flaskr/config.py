@@ -2,6 +2,7 @@
 from dotenv import load_dotenv
 from flask import Flask, render_template
 from flask_login import LoginManager
+from flask_wtf import RecaptchaField
 
 from models.database import db, migrate, User
 
@@ -34,6 +35,11 @@ migrate.init_app(app, db)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'auth.login'
+recaptcha = RecaptchaField()
+
+app.config['RECAPTCHA_PUBLIC_KEY'] = os.getenv('RECAPTCHA_PUBLIC_KEY')
+app.config['RECAPTCHA_PRIVATE_KEY'] = os.getenv('RECAPTCHA_PRIVATE_KEY')
+
 
 @login_manager.user_loader
 def load_user(user_id):
