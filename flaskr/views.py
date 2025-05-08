@@ -259,12 +259,11 @@ def signup():
         # Create log entry
         new_user.generate_log()
         db.session.commit()
-
         # send a registration email to the users email address
         reg_email(form.email.data)
 
-        flash('Account created successfully. You can now log in.', 'success')
-        return redirect(url_for('auth.login'))
+        flash('Account created successfully. You are now logged in.', 'success')
+        return redirect(url_for('auth.home'))
 
     elif form.is_submitted():
         print("DEBUG: Form submitted but not validated")
