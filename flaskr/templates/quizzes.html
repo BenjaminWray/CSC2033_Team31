@@ -34,10 +34,16 @@
         <div class="quiz-list">
             {% if quizzes | length > 0 %}
                 {% for quiz in quizzes %}
-                    <a href="/quizzes/{{ quiz.id }}">
+                    <a href="/quizzes/{{ quiz.id }}" style="color: inherit; text-decoration: none">
                         <div class="quiz-button">
                             <h1>{{ quiz.title }}</h1>
-                            <p>created by {{ users[quiz].username }} at {{ quiz.created_at }}</p>
+                            <div class="quiz-user-info">
+                                created by {{ users[quiz].username }} at {{ quiz.created_at }}
+                                {% if quiz.user_id == current_user.id %}
+                                    <a href="/quizzes/{{ quiz.id }}/modify">modify</a>
+                                    <a href="/quizzes/{{ quiz.id }}/delete">delete</a>
+                                {% endif %}
+                            </div>
                         </div>
                     </a>
                 {% endfor %}
