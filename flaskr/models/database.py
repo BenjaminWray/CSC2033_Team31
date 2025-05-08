@@ -29,9 +29,26 @@ class User(db.Model, UserMixin):
     # This is a one-to-one relationship
     log = db.relationship("Log", back_populates="user", uselist=False)
 
+    
+
+    log = db.relationship("Log", back_populates="user")
+
+    def __init__(self, username, email, password_hash, phone_number=None, location=None, role="user", is_active=True, firstname=None, lastname=None):
+        self.username = username
+        self.email = email
+        self.password_hash = password_hash
+        self.phone_number = phone_number
+        self.location = location
+        self.role = role
+        self.is_active = is_active
+        self.firstname = firstname
+        self.lastname = lastname
+        self.time_joined = datetime.now()
+
+
     def generate_log(self):
-        db.session.add(Log(self.id))
-        db.session.commit()
+        log_entry = Log(userid=self.id)
+        db.session.add(log_entry)
 
 class Quiz(db.Model):
     __tablename__ = 'quizzes'
@@ -54,6 +71,13 @@ class Question(db.Model):
     topic = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     answers = db.relationship('Answer', backref='question', lazy=True)
+
+    def __init__(self, content, difficulty, topic, quiz_id):
+        self.content = content
+        self.difficulty = difficulty
+        self.topic = topic
+        self.quiz_id = quiz_id
+        self.created_at = datetime.now(timezone.utc)
 
 class Answer(db.Model):
     __tablename__ = 'answers'
@@ -85,13 +109,13 @@ class Leaderboard(db.Model):
 class Log(db.Model):
     __tablename__ = 'logs'
 
-    user = db.relationship("User", back_populates="log")
-
     id = db.Column(db.Integer, primary_key=True)
     userid = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     registration = db.Column(db.DateTime, nullable=False)
     latest_login = db.Column(db.DateTime, default=None)
     previous_login = db.Column(db.DateTime, default=None)
+
+    user = db.relationship("User", back_populates="log")
 
     def __init__(self, userid):
         self.userid = userid
@@ -192,11 +216,13 @@ def delete_answer(answer_id):
     return answer
 
 # CRUD operations for User
-def create_user(username, email, password_hash, phone_number=None, location=None, role="user", is_active=True):
+def create_user(username, email, password_hash, firstname, lastname, phone_number=None, location=None, role="user", is_active=True):
     user = User(
         username=username,
         email=email,
         password_hash=password_hash,
+        firstname=firstname,
+        lastname=lastname,
         phone_number=phone_number,
         location=location,
         role=role,

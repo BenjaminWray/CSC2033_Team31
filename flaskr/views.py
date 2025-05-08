@@ -5,7 +5,8 @@ from flask_login import login_user, current_user, login_required, logout_user
 from sqlalchemy import or_
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import SignUpForm, LoginForm, QuizSearchForm
-from models.database import db, create_user, User, login_manager, Quiz, get_user_by_id
+from models.database import db, create_user, User, login_manager, Quiz, get_user_by_id, Question
+#, create_question, create_answer
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -20,10 +21,8 @@ def admin_required(f):
     def wrapper(*args, **kwargs):
         if not current_user.is_authenticated:
             return login_manager.unauthorized()
-
         if current_user.role.strip() != 'admin':
             abort(403)
-
         return f(*args, **kwargs)
     return wrapper
 
@@ -82,17 +81,44 @@ def home():
     return render_template('home.html')
 
 
+# Helper function for account rendering
+def render_account_page(message=None, error=None):
+    return render_template('account.html', user=current_user, message=message, error=error)
+
+
 # User account route
 @auth_bp.route('/account')
 @login_required
 def account():
-    return render_template('account.html', user=current_user )
-
+    if current_user.username.lower() == 'guest':
+        flash("🚫 Guests are not allowed to access the account page.", "danger")
+        return redirect(url_for('auth.home'))
+    return render_template('account.html', user=current_user)
 
 @auth_bp.route('/quiz_history')
 @login_required
 def quiz_history():
     return render_template("quiz_history.html")
+
+
+# Username change handler
+@auth_bp.route('/change_username', methods=['POST'])
+@login_required
+def change_username():
+    new_username = request.form.get('new_username', '').strip()
+
+    if not new_username:
+        return render_account_page(error="Username cannot be empty.")
+
+    if new_username == current_user.username:
+        return render_account_page(error="New username is the same as current username.")
+
+    if User.query.filter_by(username=new_username).first():
+        return render_account_page(error="Username already exists.")
+
+    current_user.username = new_username
+    db.session.commit()
+    return render_account_page(message="Username updated successfully!")
 
 
 @auth_bp.route('/leaderboard')
@@ -208,7 +234,6 @@ def signup():
     form = SignUpForm()
 
     if form.validate_on_submit():
-
         # Check for existing username/email
         if User.query.filter_by(username=form.username.data).first():
             flash('Username already taken.', 'danger')
@@ -226,6 +251,8 @@ def signup():
             username=form.username.data,
             email=form.email.data,
             password_hash=hashed_password,
+            firstname=form.firstname.data,  # Collect firstname from the form
+            lastname=form.lastname.data,    # Collect lastname from the form
             phone_number=form.phone_number.data,
             location=form.location.data
         )
@@ -235,10 +262,11 @@ def signup():
         db.session.commit()
 
         flash('Account created successfully. You can now log in.', 'success')
-        return render_template('signup.html', form=form)
+        return redirect(url_for('auth.login'))
 
     elif form.is_submitted():
-        return render_template('signup.html', form=form)
+        print("DEBUG: Form submitted but not validated")
+        print(form.errors)  # Print validation errors
 
     return render_template('signup.html', form=form)
 
@@ -310,3 +338,23 @@ def new_flashcard():
             flash(f"An error occurred: {str(e)}", 'danger')
             return redirect(url_for('auth.new_flashcard'))
     return render_template('new_flashcard.html', form=form)
+
+@auth_bp.route('/guest_login')
+def guest_login():
+    guest_user = User.query.filter_by(username='guest').first()
+
+    if not guest_user:
+        guest_user = User(
+            username='guest',
+            email='guest@example.com',
+            password_hash=generate_password_hash('guest123'),
+            role='user'
+        )
+        db.session.add(guest_user)
+        db.session.commit()
+        guest_user.generate_log()
+
+    login_user(guest_user)
+    flash("You are now logged in as a guest.", "info")
+    return redirect(url_for('auth.home'))
+

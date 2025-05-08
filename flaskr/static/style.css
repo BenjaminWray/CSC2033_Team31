@@ -314,8 +314,14 @@ form input:focus {
 /* flash danger */
 .flash.danger {
   background-color: #ffe6e6;
-  border: 1px solid #ff9999;
+  border: 2px solid #ff4d4d;
   color: #cc0000;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+  padding: 12px 18px;
+  animation: shake 0.3s ease-in-out 2;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
 }
 
 /* flash success */
@@ -365,4 +371,31 @@ form input:focus {
   background-color: #00cc66;
   color: white;
   border-color: #00cc66;
+}
+
+.form-select.custom-select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: white;
+    color: #333;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 20px;
+}
+
+.form-select.custom-select:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+.form-hint {
+    color: #888;
+    font-size: 0.85em;
+    margin-top: 2px;
+    display: block;
 }

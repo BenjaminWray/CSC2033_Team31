@@ -7,37 +7,57 @@
     {{ form.hidden_tag() }}
 
     <label>{{ form.username.label }}</label>
-    {{ form.username(size=32) }}
+    {{ form.username(size=32, class="form-control" + (" is-invalid" if form.username.errors else "")) }}
     {% for error in form.username.errors %}
     <p class="error-message">{{ error }}</p>
     {% endfor %}
 
     <label>{{ form.email.label }}</label>
-    {{ form.email(size=32) }}
+    {{ form.email(size=32, class="form-control" + (" is-invalid" if form.email.errors else "")) }}
     {% for error in form.email.errors %}
     <p class="error-message">{{ error }}</p>
     {% endfor %}
 
+    <label>{{ form.firstname.label }}</label>
+    {{ form.firstname(size=32) }}
+    {% for error in form.firstname.errors %}
+    <p class="error-message">{{ error }}</p>
+    {% endfor %}
+
+    <label>{{ form.lastname.label }}</label>
+    {{ form.lastname(size=32) }}
+    {% for error in form.lastname.errors %}
+    <p class="error-message">{{ error }}</p>
+    {% endfor %}
+
     <label>{{ form.phone_number.label }}</label>
-    {{ form.phone_number(size=32) }}
+    {{ form.phone_number(
+        size=32,
+        class="form-control" + (" is-invalid" if form.phone_number.errors else ""),
+        placeholder="07xxxxxxxxx or +447xxxxxxxxx"
+    ) }}
     {% for error in form.phone_number.errors %}
     <p class="error-message">{{ error }}</p>
     {% endfor %}
 
-    <label>{{ form.location.label }}</label>
-    {{ form.location(size=32) }}
+    <label for="location">{{ form.location.label }}</label>
+    {{ form.location(class="form-select custom-select" + (" is-invalid" if form.location.errors else "")) }}
     {% for error in form.location.errors %}
     <p class="error-message">{{ error }}</p>
     {% endfor %}
 
     <label>{{ form.password.label }}</label>
-    {{ form.password(size=32) }}
+    {{ form.password(
+        size=32,
+        class="form-control" + (" is-invalid" if form.password.errors else ""),
+        placeholder="At least 8 characters, with upper/lowercase and number"
+    ) }}
     {% for error in form.password.errors %}
     <p class="error-message">{{ error }}</p>
     {% endfor %}
 
     <label>{{ form.confirm_password.label }}</label>
-    {{ form.confirm_password(size=32) }}
+    {{ form.confirm_password(size=32, class="form-control" + (" is-invalid" if form.confirm_password.errors else "")) }}
     {% for error in form.confirm_password.errors %}
     <p class="error-message">{{ error }}</p>
     {% endfor %}
@@ -47,6 +67,6 @@
 
 <div class="links">
     <a href="{{ url_for('auth.login') }}">Login</a> |
-    <a href="{{ url_for('auth.index') }}">Continue as Guest</a>
+    <a href="{{ url_for('auth.guest_login') }}">Continue as Guest</a>
 </div>
 {% endblock %}

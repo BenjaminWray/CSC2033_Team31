@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Create a New Flashcard</h1>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.question.label }}<br>
+        {{ form.question(size=40) }}
+    </div>
+    <div>
+        {{ form.answer.label }}<br>
+        {{ form.answer(size=40) }}
+    </div>
+    <div>
+        {{ form.difficulty.label }}<br>
+        {{ form.difficulty() }}
+    </div>
+    <div>
+        {{ form.topic.label }}<br>
+        {{ form.topic(size=40) }}
+    </div>
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
+{% endblock %}

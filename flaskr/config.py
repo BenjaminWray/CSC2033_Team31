@@ -2,13 +2,14 @@
 from dotenv import load_dotenv
 from flask import Flask, render_template
 from flask_login import LoginManager
-from flask_wtf import RecaptchaField
 
-from models.database import db, migrate, User
+from flask_wtf import RecaptchaField
+from models.database import db, migrate, User, Question, Log
+
 
 app = Flask(__name__)
 
-# load environment variables from .env file
+# Load environment variables from .env file
 load_dotenv()
 
 
@@ -44,6 +45,7 @@ app.config['RECAPTCHA_PRIVATE_KEY'] = os.getenv('RECAPTCHA_PRIVATE_KEY')
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
 @app.errorhandler(403)
 def forbidden(e):
     return render_template("403.html"), 403
