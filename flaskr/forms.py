@@ -1,4 +1,4 @@
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm , RecaptchaField
 from wtforms import StringField, PasswordField, SubmitField, SelectField, FieldList, FormField, IntegerField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Regexp, Optional, ValidationError, NumberRange
 from models.database import get_quiz_by_id
@@ -81,6 +81,7 @@ class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Login')
+    recaptcha = RecaptchaField()
 
 class QuizSearchForm(FlaskForm):
     search_query = StringField('Search:')
