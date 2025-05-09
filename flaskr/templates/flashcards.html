@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Flashcards</h1>
+<h1 style="text-align: center;">Flashcards</h1>
 
 <!-- Location Selection -->
-<div class="location-selection">
+<div class="location-selection" style="text-align: center; margin-bottom: 20px;">
     <form method="GET" action="{{ url_for('auth.flashcards') }}">
         <label for="location">Choose a location:</label>
         <select name="location" id="location" onchange="this.form.submit()">
@@ -19,14 +19,26 @@
 
 <!-- Flashcard Display -->
 {% if questions %}
-    <div class="flashcard">
-        <p><strong>Question:</strong> {{ questions[current_index].content }}</p>
-        <button id="show-answer">Show Answer</button>
-        <p id="answer" style="display: none;"><strong>Answer:</strong> {{ questions[current_index].answers[0].content }}</p>
+    <div class="flashcard" style="max-width: 800px; margin: 0 auto; border: 2px solid #d9d9d9; border-radius: 12px; padding: 30px; background-color: #f0f8ff; text-align: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+        <!-- Question -->
+        <p class="question" style="color: #003366; font-size: 1.2rem;">
+            <strong>Question:</strong> {{ questions[current_index].content }}
+        </p>
+
+        <!-- Answer (initially hidden) -->
+        <button id="show-answer" class="btn" style="margin-top: 10px;">Show Answer</button>
+        <p id="answer" class="answer" style="display: none; margin-top: 15px; font-size: 1.1rem; color: #006600;">
+            <strong>Answer:</strong>
+            {% if questions[current_index].answers %}
+                {{ questions[current_index].answers[0].content }}
+            {% else %}
+                <span class="no-answer" style="color: #cc0000;"><em>No answer available.</em></span>
+            {% endif %}
+        </p>
     </div>
 
     <!-- Navigation Buttons -->
-    <div class="navigation-buttons">
+    <div class="navigation-buttons" style="text-align: center; margin-top: 20px;">
         {% if current_index > 0 %}
             <a href="{{ url_for('auth.flashcards', location=request.args.get('location'), index=current_index-1) }}" class="btn">Previous</a>
         {% endif %}
@@ -35,11 +47,11 @@
         {% endif %}
     </div>
 {% else %}
-    <p>No flashcards available for this location.</p>
+    <p style="text-align: center;">No flashcards available for this location.</p>
 {% endif %}
 
 <script>
-    document.getElementById('show-answer').addEventListener('click', function() {
+    document.getElementById('show-answer').addEventListener('click', function () {
         document.getElementById('answer').style.display = 'block';
     });
 </script>

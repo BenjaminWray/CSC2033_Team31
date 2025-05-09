@@ -487,3 +487,39 @@ form input:focus {
     margin-top: 2px;
     display: block;
 }
+
+.quiz-button {
+    background-color: white;
+    padding: 20px;
+    margin: 15px auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    text-align: center;
+}
+
+.flashcard {
+    border: 2px solid #d9d9d9;
+    border-radius: 12px;
+    padding: 25px;
+    background-color: #f0f8ff;
+    text-align: center;
+    color: #333;
+}
+
+.flashcard .question {
+    color: #003366;
+}
+
+.flashcard .answer {
+    color: #006600;
+}
+
+.flashcard .no-answer {
+    color: #cc0000;
+}
+
+.flashcard .btn {
+    background-color: #007BFF;
+    color: white;
+}

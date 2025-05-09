@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .result-container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 30px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .result-card {
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        background: white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        border-left: 6px solid #dee2e6;
+    }
+    .result-card.correct {
+        border-left-color: #198754;
+    }
+    .result-card.incorrect {
+        border-left-color: #dc3545;
+    }
+    .question-title {
+        font-size: 18px;
+        font-weight: bold;
+    }
+    .correct-answer {
+        color: #198754;
+        font-weight: bold;
+    }
+    .incorrect-answer {
+        color: #dc3545;
+        font-weight: bold;
+    }
+</style>
+
+<div class="result-container">
+    <h2 class="text-center mb-4">{{ quiz.title }} - Results</h2>
+
+    <div class="text-center mb-4">
+        <h4>Your Score: {{ score }} / {{ total }}</h4>
+    </div>
+
+    {% for r in results %}
+    <div class="result-card {% if r.is_correct %}correct{% else %}incorrect{% endif %}">
+        <div class="question-title">
+            Q{{ loop.index }}. {{ r.question }}
+            {% if r.is_correct %}
+                ✅ <span class="correct-answer">Correct</span>
+            {% else %}
+                ❌ <span class="incorrect-answer">Incorrect</span>
+            {% endif %}
+        </div>
+
+        <div class="mt-2">
+            <p><strong>Your Answer:</strong> {{ r.selected if r.selected else "(No Answer)" }}</p>
+            {% if not r.is_correct %}
+                <p><strong>Correct Answer:</strong> <span class="correct-answer">{{ r.correct }}</span></p>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('auth.quiz_history') }}" class="btn btn-secondary">← Back to History</a>
+    </div>
+</div>
+{% endblock %}

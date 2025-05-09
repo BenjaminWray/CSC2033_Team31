@@ -1,4 +1,5 @@
 import math
+from datetime import datetime
 from functools import wraps
 from flask import Blueprint, render_template, redirect, url_for, flash, abort, request, session
 from flask_login import login_user, current_user, login_required, logout_user
@@ -99,11 +100,6 @@ def account():
         return redirect(url_for('auth.home'))
     return render_template('account.html', user=current_user)
 
-@auth_bp.route('/quiz_history')
-@login_required
-def quiz_history():
-    return render_template("quiz_history.html")
-
 
 # Username change handler
 @auth_bp.route('/change_username', methods=['POST'])
@@ -127,12 +123,26 @@ def change_username():
 @auth_bp.route('/leaderboard')
 @login_required
 def leaderboard():
-    top_users = Leaderboard.query.options(joinedload(Leaderboard.user)) \
-        .order_by(Leaderboard.total_score.desc()) \
-            .limit(20).all()
+    user_location = current_user.location.lower() if current_user.location else None
 
-    return render_template("leaderboard.html", top_users=top_users)
+    # Global top 20
+    global_leaderboard = Leaderboard.query.options(joinedload(Leaderboard.user)) \
+        .order_by(Leaderboard.total_score.desc()).limit(20).all()
 
+    # Local top 20 based on location
+    if user_location:
+        local_leaderboard = Leaderboard.query.join(User).filter(User.location.ilike(user_location)) \
+            .options(joinedload(Leaderboard.user)) \
+            .order_by(Leaderboard.total_score.desc()).limit(20).all()
+    else:
+        local_leaderboard = []
+
+    return render_template(
+        "leaderboard.html",
+        global_leaderboard=global_leaderboard,
+        local_leaderboard=local_leaderboard,
+        current_location=user_location
+    )
 
 @auth_bp.route('/quizzes', methods=['GET', 'POST'])
 def quizzes():
@@ -187,6 +197,101 @@ def quizzes():
 
     return render_template("quizzes.html", form=form, quizzes=quiz_list, users=users, pn=page_number, pmax=max_pages, imax=max_items)
 
+
+@auth_bp.route('/quizzes/<int:quiz_id>', methods=['GET', 'POST'])
+@login_required
+def quiz_detail(quiz_id):
+    quiz = Quiz.query.get_or_404(quiz_id)
+    questions = quiz.questions
+
+    if request.method == 'POST':
+        submitted = request.form.to_dict()
+        score = 0
+        results = []
+
+        for q in questions:
+            user_input = submitted.get(str(q.id), "").strip().lower()
+            correct = next((a for a in q.answers if a.is_correct), None)
+            correct_answer_text = correct.content.strip().lower() if correct else ''
+            is_correct = user_input == correct_answer_text
+
+            if is_correct:
+                score += 1
+
+            results.append({
+                'question': q.content,
+                'selected': user_input,
+                'correct': correct.content if correct else '',
+                'is_correct': is_correct,
+                'topic': q.topic
+            })
+
+
+        quiz_entry = {
+            'quiz_id': quiz.id,
+            'quiz_title': quiz.title,
+            'score': score,
+            'total': len(questions),
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'results': results
+        }
+
+        history = session.get('quiz_history', [])
+        history.append(quiz_entry)
+        session['quiz_history'] = history
+        session.modified = True
+
+        leaderboard = Leaderboard.query.filter_by(user_id=current_user.id).first()
+        time_taken = 60
+
+        if leaderboard:
+            leaderboard.total_score += score
+            leaderboard.quizzes_completed += 1
+            leaderboard.average_time = (
+                (leaderboard.average_time * (leaderboard.quizzes_completed - 1) + time_taken)
+                / leaderboard.quizzes_completed
+            )
+        else:
+            leaderboard = Leaderboard(
+                user_id=current_user.id,
+                total_score=score,
+                quizzes_completed=1,
+                average_time=time_taken
+            )
+            db.session.add(leaderboard)
+
+        db.session.commit()
+
+        return render_template('quiz_result.html', quiz=quiz, results=results, score=score, total=len(questions))
+
+    return render_template('quiz_detail.html', quiz=quiz, questions=questions)
+
+@auth_bp.route('/quiz_history')
+@login_required
+def quiz_history():
+    history = session.get('quiz_history', [])
+    return render_template('quiz_history.html', history=history)
+
+@auth_bp.route('/quiz_mistakes')
+@login_required
+def quiz_mistakes():
+    quiz_history = session.get('quiz_history', [])
+    mistakes_by_topic = {}
+
+    for attempt in quiz_history:
+        for result in attempt['results']:
+            if not result['is_correct']:
+                topic = result.get('topic', 'Unknown')
+                mistakes_by_topic.setdefault(topic, []).append({
+                    'quiz_title': attempt['quiz_title'],
+                    'timestamp': attempt['timestamp'],
+                    'question': result['question'],
+                    'selected': result['selected'],
+                    'correct': result['correct']
+                })
+
+    return render_template('mistake_summary.html', mistakes=mistakes_by_topic)
+
 # Quiz creation route
 @auth_bp.route('/quizzes/create_new_quiz', methods=['GET', 'POST'])
 @login_required
@@ -203,8 +308,10 @@ def create_new_quiz():
         # Create new quiz
         quiz = create_quiz(form.title.data, current_user.id)
         for qna in form.questions:
-            question = create_question(quiz_id=quiz.id, content=qna.form.question.data, difficulty=qna.form.difficulty.data, topic=qna.form.topic.data)
-            create_answer(question.id, qna.form.answer.data)
+            question = create_question(quiz_id=quiz.id, content=qna.form.question.data,
+                                       difficulty=qna.form.difficulty.data, topic=qna.form.topic.data)
+            create_answer(question_id=question.id, content=qna.form.answer.data, is_correct=True)
+
         session.pop('create_quiz_form')
         return redirect(url_for('auth.quizzes'))
 
@@ -354,6 +461,7 @@ def logout():
     flash("You have been logged out.", "success")
     return redirect(url_for('auth.index'))
 
+
 @auth_bp.route('/flashcards', methods=['GET'])
 @login_required
 def flashcards():
@@ -365,11 +473,13 @@ def flashcards():
         questions = Question.query.all()
 
     # Default to the first flashcard
+    if not questions:
+        return render_template('flashcards.html', questions=[], current_index=0)
+
     current_index = int(request.args.get('index', 0))
     current_index = max(0, min(current_index, len(questions) - 1))
-    
-    return render_template('flashcards.html', questions=questions)
 
+    return render_template('flashcards.html', questions=questions, current_index=current_index)
 
 @auth_bp.route('/flashcards/new', methods=['GET', 'POST'])
 @login_required
@@ -451,3 +561,14 @@ def guest_quiz_attempt(quiz_id):
         return render_template('guest_quiz_results.html', results=results, score=score, total=len(questions))
 
     return render_template('guest_quiz_attempt.html', quiz=quiz, questions=questions)
+
+@auth_bp.route('/debug/add_leaderboard')
+def add_leaderboard_entry():
+    from models.database import db, Leaderboard
+
+    new_entry = Leaderboard(user_id=1, total_score=5, quizzes_completed=1, average_time=50)
+
+    db.session.add(new_entry)
+    db.session.commit()
+
+    return "Leaderboard entry added."
