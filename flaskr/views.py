@@ -218,7 +218,6 @@ def quizzes():
 
 
 @auth_bp.route('/quizzes/<int:quiz_id>', methods=['GET', 'POST'])
-@login_required
 def quiz_detail(quiz_id):
     quiz = Quiz.query.get_or_404(quiz_id)
     questions = quiz.questions
@@ -260,26 +259,27 @@ def quiz_detail(quiz_id):
         session['quiz_history'] = history
         session.modified = True
 
-        leaderboard = Leaderboard.query.filter_by(user_id=current_user.id).first()
-        time_taken = 60
+        if current_user.is_authenticated:
+            leaderboard = Leaderboard.query.filter_by(user_id=current_user.id).first()
+            time_taken = 60
 
-        if leaderboard:
-            leaderboard.total_score += score
-            leaderboard.quizzes_completed += 1
-            leaderboard.average_time = (
-                (leaderboard.average_time * (leaderboard.quizzes_completed - 1) + time_taken)
-                / leaderboard.quizzes_completed
-            )
-        else:
-            leaderboard = Leaderboard(
-                user_id=current_user.id,
-                total_score=score,
-                quizzes_completed=1,
-                average_time=time_taken
-            )
-            db.session.add(leaderboard)
+            if leaderboard:
+                leaderboard.total_score += score
+                leaderboard.quizzes_completed += 1
+                leaderboard.average_time = (
+                    (leaderboard.average_time * (leaderboard.quizzes_completed - 1) + time_taken)
+                    / leaderboard.quizzes_completed
+                )
+            else:
+                leaderboard = Leaderboard(
+                    user_id=current_user.id,
+                    total_score=score,
+                    quizzes_completed=1,
+                    average_time=time_taken
+                )
+                db.session.add(leaderboard)
 
-        db.session.commit()
+            db.session.commit()
 
         return render_template('quiz_result.html', quiz=quiz, results=results, score=score, total=len(questions))
 
