@@ -5,12 +5,12 @@ from flask import Blueprint, render_template, redirect, url_for, flash, abort, r
 from flask_login import login_user, current_user, login_required, logout_user
 from sqlalchemy import or_
 from werkzeug.security import generate_password_hash, check_password_hash
-from models.database import Leaderboard
+
+from models.database import Leaderboard, delete_quiz, get_quiz_by_id, update_quiz, update_question, update_answer, delete_question, delete_answer, delete_question_and_answer
 from sqlalchemy.orm import joinedload
 from forms import SignUpForm, LoginForm, QuizSearchForm, CreateQuizForm
 from models.database import db, create_user, User, login_manager, Quiz, get_user_by_id, Question, create_quiz, \
     create_question, create_answer
-#, create_question, create_answer
 from mail import reg_email
 
 auth_bp = Blueprint('auth', __name__)
@@ -132,6 +132,8 @@ def leaderboard():
 
 @auth_bp.route('/quizzes', methods=['GET', 'POST'])
 def quizzes():
+    if 'create_quiz_form' in session: session.pop('create_quiz_form')
+
     form = QuizSearchForm()
 
     # Pagination setup
@@ -267,7 +269,7 @@ def create_new_quiz():
     if form.is_submitted() and form.change_length.data:
         # Reload page with new quiz length
         session['create_quiz_form'] = form.data
-        return redirect(url_for('auth.create_new_quiz'))
+        return redirect(request.url)
     elif form.validate_on_submit():
         # Create new quiz
         quiz = create_quiz(form.title.data, current_user.id)
@@ -286,7 +288,7 @@ def create_new_quiz():
         for _ in range(form.length.data - current_length):
             form.questions.append_entry()
 
-    return render_template("create_new_quiz.html", form=form)
+    return render_template("edit_quiz.html", form=form, is_new=True)
 
     # Optionally, update leaderboard or other relevant stats
     leaderboard = Leaderboard.query.filter_by(user_id=user.id).first()
@@ -302,6 +304,58 @@ def create_new_quiz():
 
     flash(f"Your score is {total_score}!", "success")
     return redirect(url_for('auth.quiz_history'))
+
+# Quiz modification route
+@auth_bp.route('/quizzes/<int:quiz_id>/modify', methods=['GET', 'POST'])
+@login_required
+def quiz_modify(quiz_id):
+    if current_user.id != get_quiz_by_id(quiz_id).user_id:
+        return redirect(url_for('auth.quizzes'))
+
+    form = CreateQuizForm().load_quiz(quiz_id)
+
+    if form.is_submitted() and form.change_length.data:
+        # Reload page with new quiz length
+        return redirect(url_for('auth.quiz_modify', quiz_id=quiz_id, length=form.length.data))
+    elif form.validate_on_submit():
+        # Modify quiz
+        update_quiz(quiz_id, title=form.title.data)
+        questions = get_quiz_by_id(quiz_id).questions
+        for i in range(form.length.data):
+            q_form = form.questions[i].form
+            if i < len(questions):
+                question = questions[i]
+                update_question(question.id, content=q_form.question.data, difficulty=q_form.difficulty.data, topic=q_form.topic.data)
+                update_answer(question.answers[0].id, q_form.answer.data)
+            else:
+                new_question = create_question(quiz_id=quiz_id, content=q_form.question.data, difficulty=q_form.difficulty.data, topic=q_form.topic.data)
+                create_answer(new_question.id, q_form.answer.data)
+        if form.length.data < len(questions):
+            for q in [questions[x] for x in range(len(questions)) if x >= form.length.data]:
+                delete_question_and_answer(q.id, q.answers[0].id)
+
+        return redirect(url_for('auth.quizzes'))
+
+    form.length.data = max(1, request.args.get('length', len(get_quiz_by_id(quiz_id).questions), type=int))
+
+    # Update length of questions field list
+    current_length = len(form.questions)
+    if form.length.data < current_length:
+        form.questions = form.questions[:form.length.data]
+    elif form.length.data > current_length:
+        for _ in range(form.length.data - current_length):
+            form.questions.append_entry()
+
+    return render_template("edit_quiz.html", form=form, is_new=False)
+
+# Quiz deletion route
+@auth_bp.route('/quizzes/<int:quiz_id>/delete', methods=['GET', 'POST'])
+@login_required
+def quiz_delete(quiz_id):
+    if current_user.id == get_quiz_by_id(quiz_id).user_id:
+        delete_quiz(quiz_id)
+    return redirect(url_for('auth.quizzes'))
+
 # User registration route
 @auth_bp.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -377,9 +431,9 @@ def logout():
 @login_required
 def flashcards():
     """Display flashcards for a specific topic or all topics."""
-    location = request.args.get('location', None)
-    if location:
-        questions = Question.query.filter_by(locatioon=location).all()
+    topic = request.args.get('location', None)
+    if topic:
+        questions = Question.query.filter_by(topic=topic).all()
     else:
         questions = Question.query.all()
 

@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField, FieldList, FormField, IntegerField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Regexp, Optional, ValidationError, NumberRange
+from models.database import get_quiz_by_id
 
 
 def validate_common_email_domain(form, field):
@@ -94,9 +95,22 @@ class QuestionAnswerForm(FlaskForm):
     difficulty = SelectField('Difficulty', choices=[('easy', 'Easy'), ('medium', 'Medium'), ('hard', 'Hard')])
     topic = StringField("Topic", validators=[Length(min=1)])
 
+    def load_question(self, question):
+        self.question.data = question.content
+        self.answer.data = question.answers[0].content
+        self.difficulty.data = question.difficulty
+        self.topic.data = question.topic
+        return self
+
 class CreateQuizForm(FlaskForm):
     title = StringField('Title', validators=[Length(min=1)])
     length = IntegerField('Number of questions', default=1, validators=[DataRequired(), NumberRange(min=1, max=9999)])
-    change_length = SubmitField('Change Quiz Length')
+    change_length = SubmitField('Change quiz length')
     questions = FieldList(FormField(QuestionAnswerForm))
-    submit = SubmitField('Create Quiz')
+    submit = SubmitField('Save quiz')
+
+    def load_quiz(self, quiz_id):
+        quiz = get_quiz_by_id(quiz_id)
+        self.title.data = quiz.title
+        for question in quiz.questions: self.questions.append_entry(data=QuestionAnswerForm().load_question(question).data)
+        return self

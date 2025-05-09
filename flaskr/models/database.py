@@ -165,6 +165,31 @@ def create_quiz(title, user_id):
     db.session.commit()
     return quiz
 
+def update_quiz(quiz_id, title):
+    quiz = Quiz.query.get(quiz_id)
+    quiz.title = title
+
+def delete_quiz(quiz_id):
+    quiz = get_quiz_by_id(quiz_id)
+    for question in quiz.questions:
+        for answer in question.answers:
+            db.session.delete(answer)
+        db.session.delete(question)
+    if quiz:
+        db.session.delete(quiz)
+        db.session.commit()
+    return quiz
+
+def get_quiz_by_id(quiz_id):
+    return db.session.get(Quiz, quiz_id)
+
+def delete_question_and_answer(question_id, answer_id):
+    question = db.session.get(Question, question_id)
+    answer = db.session.get(Answer, answer_id)
+    if question: db.session.delete(question)
+    if answer: db.session.delete(answer)
+    if question or answer: db.session.commit()
+
 # CRUD operations for Questions
 def create_question(quiz_id, content, difficulty, topic):
     question = Question(quiz_id=quiz_id, content=content, difficulty=difficulty, topic=topic)
@@ -195,7 +220,7 @@ def delete_question(question_id):
     return question
 
 # CRUD operations for Answers
-def create_answer(question_id, content, is_correct=False):
+def create_answer(question_id, content, is_correct=True):
     answer = Answer(question_id=question_id, content=content, is_correct=is_correct)
     db.session.add(answer)
     db.session.commit()

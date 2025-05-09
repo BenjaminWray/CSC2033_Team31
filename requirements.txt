@@ -13,3 +13,7 @@ python-dotenv~=1.1.0
 # tests
 pytest~=8.3.5
 
+
+SQLAlchemy~=2.0.40
+WTForms~=3.2.1
+Werkzeug~=3.1.3
