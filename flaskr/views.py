@@ -75,8 +75,27 @@ def update_role(user_id):
 @admin_required
 def delete_user(user_id):
     user = User.query.get_or_404(user_id)
+
+    leaderboard = Leaderboard.query.filter_by(user_id=user_id).first()
+    if leaderboard:
+        db.session.delete(leaderboard)
+
+    for result in user.results:
+        db.session.delete(result)
+
+    for quiz in user.quizzes:
+        for question in quiz.questions:
+            for answer in question.answers:
+                db.session.delete(answer)
+            db.session.delete(question)
+        db.session.delete(quiz)
+
+    if user.log:
+        db.session.delete(user.log)
+
     db.session.delete(user)
     db.session.commit()
+
     flash(f"User {user.username} deleted.", "success")
     return redirect(url_for('auth.admin_dashboard'))
 
@@ -419,6 +438,16 @@ def signup():
 
         # Create log entry
         new_user.generate_log()
+        db.session.commit()
+
+        login_user(new_user)
+        new_leaderboard = Leaderboard(
+            user_id=new_user.id,
+            total_score=0,
+            quizzes_completed=0,
+            average_time=0
+        )
+        db.session.add(new_leaderboard)
         db.session.commit()
         # send a registration email to the users email address
         reg_email(form.email.data)
