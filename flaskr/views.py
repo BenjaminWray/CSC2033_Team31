@@ -427,6 +427,7 @@ def logout():
     flash("You have been logged out.", "success")
     return redirect(url_for('auth.index'))
 
+
 @auth_bp.route('/flashcards', methods=['GET'])
 @login_required
 def flashcards():
@@ -438,11 +439,13 @@ def flashcards():
         questions = Question.query.all()
 
     # Default to the first flashcard
+    if not questions:
+        return render_template('flashcards.html', questions=[], current_index=0)
+
     current_index = int(request.args.get('index', 0))
     current_index = max(0, min(current_index, len(questions) - 1))
-    
-    return render_template('flashcards.html', questions=questions)
 
+    return render_template('flashcards.html', questions=questions, current_index=current_index)
 
 @auth_bp.route('/flashcards/new', methods=['GET', 'POST'])
 @login_required

@@ -497,3 +497,29 @@ form input:focus {
     max-width: 600px;
     text-align: center;
 }
+
+.flashcard {
+    border: 2px solid #d9d9d9;
+    border-radius: 12px;
+    padding: 25px;
+    background-color: #f0f8ff;
+    text-align: center;
+    color: #333;
+}
+
+.flashcard .question {
+    color: #003366;
+}
+
+.flashcard .answer {
+    color: #006600;
+}
+
+.flashcard .no-answer {
+    color: #cc0000;
+}
+
+.flashcard .btn {
+    background-color: #007BFF;
+    color: white;
+}
