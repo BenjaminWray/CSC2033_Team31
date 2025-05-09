@@ -1,42 +1,56 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="Leaderboard-container">
-    <h2 class="signup-title">Leaderboard</h2>
-    <table class="leaderboard-table">
-        <thead>
+<div class="container mt-5" style="max-width: 900px; margin: auto;">
+    <h2 class="text-center mb-4">📍 Local Leaderboard ({{ current_location | capitalize }})</h2>
+
+    {% if local_leaderboard %}
+    <table class="table table-striped table-bordered text-center">
+        <thead class="table-dark">
             <tr>
-                <th>Rank</th>
-                <th>Username</th>
-                <th>Score</th>
+                <th scope="col">#</th>
+                <th scope="col">Username</th>
+                <th scope="col">Score</th>
+                <th scope="col">Quizzes Completed</th>
             </tr>
         </thead>
         <tbody>
-            {% for user in top_users %}
-                <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.results }}</td>
-                </tr>
-                <p>{{ loop.index }}. {{ entry.user.username }} - Score: {{ entry.total_score }} - Quizzes: {{ entry.quizzes_completed }}</p>
+            {% for entry in local_leaderboard %}
+            <tr>
+                <th scope="row">{{ loop.index }}</th>
+                <td>{{ entry.user.username }}</td>
+                <td>{{ entry.total_score }}</td>
+                <td>{{ entry.quizzes_completed }}</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+        <p class="text-center">No local leaderboard available.</p>
+    {% endif %}
 
+    <hr class="my-5">
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <h2 class="text-center mb-4">🌍 Global Leaderboard</h2>
+    <table class="table table-striped table-bordered text-center">
+        <thead class="table-primary">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Username</th>
+                <th scope="col">Score</th>
+                <th scope="col">Quizzes Completed</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in global_leaderboard %}
+            <tr>
+                <th scope="row">{{ loop.index }}</th>
+                <td>{{ entry.user.username }}</td>
+                <td>{{ entry.total_score }}</td>
+                <td>{{ entry.quizzes_completed }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

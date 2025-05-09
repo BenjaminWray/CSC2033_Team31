@@ -123,12 +123,26 @@ def change_username():
 @auth_bp.route('/leaderboard')
 @login_required
 def leaderboard():
-    top_users = Leaderboard.query.options(joinedload(Leaderboard.user)) \
-        .order_by(Leaderboard.total_score.desc()) \
-            .limit(20).all()
+    user_location = current_user.location.lower() if current_user.location else None
 
-    return render_template("leaderboard.html", top_users=top_users)
+    # Global top 20
+    global_leaderboard = Leaderboard.query.options(joinedload(Leaderboard.user)) \
+        .order_by(Leaderboard.total_score.desc()).limit(20).all()
 
+    # Local top 20 based on location
+    if user_location:
+        local_leaderboard = Leaderboard.query.join(User).filter(User.location.ilike(user_location)) \
+            .options(joinedload(Leaderboard.user)) \
+            .order_by(Leaderboard.total_score.desc()).limit(20).all()
+    else:
+        local_leaderboard = []
+
+    return render_template(
+        "leaderboard.html",
+        global_leaderboard=global_leaderboard,
+        local_leaderboard=local_leaderboard,
+        current_location=user_location
+    )
 
 @auth_bp.route('/quizzes', methods=['GET', 'POST'])
 def quizzes():
@@ -227,10 +241,30 @@ def quiz_detail(quiz_id):
         session['quiz_history'] = history
         session.modified = True
 
+        leaderboard = Leaderboard.query.filter_by(user_id=current_user.id).first()
+        time_taken = 60
+
+        if leaderboard:
+            leaderboard.total_score += score
+            leaderboard.quizzes_completed += 1
+            leaderboard.average_time = (
+                (leaderboard.average_time * (leaderboard.quizzes_completed - 1) + time_taken)
+                / leaderboard.quizzes_completed
+            )
+        else:
+            leaderboard = Leaderboard(
+                user_id=current_user.id,
+                total_score=score,
+                quizzes_completed=1,
+                average_time=time_taken
+            )
+            db.session.add(leaderboard)
+
+        db.session.commit()
+
         return render_template('quiz_result.html', quiz=quiz, results=results, score=score, total=len(questions))
 
     return render_template('quiz_detail.html', quiz=quiz, questions=questions)
-
 
 @auth_bp.route('/quiz_history')
 @login_required
@@ -527,3 +561,14 @@ def guest_quiz_attempt(quiz_id):
         return render_template('guest_quiz_results.html', results=results, score=score, total=len(questions))
 
     return render_template('guest_quiz_attempt.html', quiz=quiz, questions=questions)
+
+@auth_bp.route('/debug/add_leaderboard')
+def add_leaderboard_entry():
+    from models.database import db, Leaderboard
+
+    new_entry = Leaderboard(user_id=1, total_score=5, quizzes_completed=1, average_time=50)
+
+    db.session.add(new_entry)
+    db.session.commit()
+
+    return "Leaderboard entry added."
