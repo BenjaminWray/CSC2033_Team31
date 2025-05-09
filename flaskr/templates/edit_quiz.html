@@ -2,9 +2,13 @@
 
 {% block content %}
     <div class="create-new-quiz-container">
-        <h2>Create New Quiz</h2>
+        {% if is_new %}
+            <h2>Create New Quiz</h2>
+        {% else %}
+            <h2>Modify Quiz</h2>
+        {% endif %}
 
-        <form class="create-quiz-form" method="POST" action="{{ url_for('auth.create_new_quiz') }}">
+        <form class="create-quiz-form" method="POST">
             {{ form.hidden_tag() }}
 
             <div class="input-container">
@@ -37,5 +41,7 @@
                 {{ form.submit }}
             </div>
         </form>
+
+        <a href="{{ url_for('auth.quizzes') }}">Go back to quizzes</a>
     </div>
 {% endblock %}
