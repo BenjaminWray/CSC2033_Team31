@@ -69,5 +69,11 @@
                 <div style="color: dimgray">Last</div>
             {% endif %}
         </div>
+
+        {% if not current_user.is_authenticated %}
+            <div class="alert alert-info mt-4">
+                <p>You are viewing quizzes as a guest. You can take quizzes, but your scores will not be saved.</p>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
