@@ -44,14 +44,14 @@ Admins will create and maintain the flashcards questions for the quizzes ensurin
 ## Contribution matrix
 
 | Name    | DataBase setup | Docker setup | Flashcard development | Quiz Development | Login/signup development | Account development | Admin development | UI/Home page development | Results | Documentation |
-|---------|-------------|--------------|-----------------------|------------------|--------------------------|---------------------|-------------------|--------------------------|---------|---------------|
-| Alex S  | M,R         | R            | R                     | R                | M,R,T                    | M,T                 |                   | M                        |         | C,M,R         |
-| Ronan   | C, M, R     | R            | C,M,R                 | R                | M, R                     | R                   | R                 | M, R                     |         | M             |
-| Ben W   | M           | C,M,T        |                       | M,R              | R                        |                     |                   | C, M, R                  |         | M             |
-| Ben L   | R           |              |                       | M,R              | M                        | M                   |                   | M                        | C,M,T   | M             |
-| Alex M  |             |              |                       | M, R             |                          |                     |                   | M, R                     |         | M             |
-| Parinaz |             |              |                       |                  | M, R                     | M                   |                   |                          |         | M             |
-| Shan    | R           | R            | M, R                  | C, M, R          | C, M, R                  | C, M, R             | C, M, R           | R                        | M, R    | M             |
+|---------|----------------|--------------|-----------------------|------------------|--------------------------|---------------------|-------------------|--------------------------|---------|---------------|
+| Alex S  | M,R            | R            | R                     | R                | M,R,T                    | M,T                 |                   | M                        |         | C,M,R         |
+| Ronan   | C, M, R, T     | R            | C,M,R , T             | R                | M, R                     | R                   | R                 | M, R                     |         | M             |
+| Ben W   | M              | C,M,T        |                       | M,R,T            | R                        |                     |                   | C, M, R, T               |         | M             |
+| Ben L   | R              |              |                       | M,R,T            | M, T                     | M                   |                   | M                        | C,M,T   | M             |
+| Alex M  |                |              |                       | M, R             |                          |                     |                   | M, R                     |         | M             |
+| Parinaz |                |              |                       |                  | M, R                     | M                   |                   |                          |         | M             |
+| Shan L  | R              | R            | M, R, T               | C, M, R          | C, M, R                  | C, M, R             | C, M, R,T         | R                        | M, R    | M             |
 ---
 
 ## Authors
