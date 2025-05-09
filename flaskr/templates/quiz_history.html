@@ -1,4 +1,36 @@
 {% extends "base.html" %}
 {% block content %}
-    <h2 style="text-align: center;">Quiz History</h2>
+<div class="container mt-5" style="max-width: 800px;">
+    <h2 class="mb-4 text-center">📜 Quiz History</h2>
+
+    {% if history %}
+        {% for entry in history|reverse %}
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">{{ entry.quiz_title }}</h5>
+                <p class="card-text">
+                    Score: <strong>{{ entry.score }}/{{ entry.total }}</strong><br>
+                    Completed at: {{ entry.timestamp }}
+                </p>
+                <a class="btn btn-outline-info btn-sm" data-bs-toggle="collapse" href="#details{{ loop.index }}" role="button">
+                    View Details
+                </a>
+                <div class="collapse mt-3" id="details{{ loop.index }}">
+                    <ul class="list-group">
+                        {% for result in entry.results %}
+                        <li class="list-group-item {% if result.is_correct %}list-group-item-success{% else %}list-group-item-danger{% endif %}">
+                            <strong>Q:</strong> {{ result.question }}<br>
+                            <strong>Your Answer:</strong> {{ result.selected }}<br>
+                            <strong>Correct Answer:</strong> {{ result.correct }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-muted text-center">No quiz history available.</p>
+    {% endif %}
+</div>
 {% endblock %}

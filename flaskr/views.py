@@ -1,4 +1,5 @@
 import math
+from datetime import datetime
 from functools import wraps
 from flask import Blueprint, render_template, redirect, url_for, flash, abort, request, session
 from flask_login import login_user, current_user, login_required, logout_user
@@ -98,11 +99,6 @@ def account():
         flash("🚫 Guests are not allowed to access the account page.", "danger")
         return redirect(url_for('auth.home'))
     return render_template('account.html', user=current_user)
-
-@auth_bp.route('/quiz_history')
-@login_required
-def quiz_history():
-    return render_template("quiz_history.html")
 
 
 # Username change handler
@@ -210,12 +206,55 @@ def quiz_detail(quiz_id):
                 'question': q.content,
                 'selected': user_input,
                 'correct': correct.content if correct else '',
-                'is_correct': is_correct
+                'is_correct': is_correct,
+                'topic': q.topic
             })
+
+
+        quiz_entry = {
+            'quiz_id': quiz.id,
+            'quiz_title': quiz.title,
+            'score': score,
+            'total': len(questions),
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'results': results
+        }
+
+        history = session.get('quiz_history', [])
+        history.append(quiz_entry)
+        session['quiz_history'] = history
+        session.modified = True
 
         return render_template('quiz_result.html', quiz=quiz, results=results, score=score, total=len(questions))
 
     return render_template('quiz_detail.html', quiz=quiz, questions=questions)
+
+
+@auth_bp.route('/quiz_history')
+@login_required
+def quiz_history():
+    history = session.get('quiz_history', [])
+    return render_template('quiz_history.html', history=history)
+
+@auth_bp.route('/quiz_mistakes')
+@login_required
+def quiz_mistakes():
+    quiz_history = session.get('quiz_history', [])
+    mistakes_by_topic = {}
+
+    for attempt in quiz_history:
+        for result in attempt['results']:
+            if not result['is_correct']:
+                topic = result.get('topic', 'Unknown')
+                mistakes_by_topic.setdefault(topic, []).append({
+                    'quiz_title': attempt['quiz_title'],
+                    'timestamp': attempt['timestamp'],
+                    'question': result['question'],
+                    'selected': result['selected'],
+                    'correct': result['correct']
+                })
+
+    return render_template('mistake_summary.html', mistakes=mistakes_by_topic)
 
 # Quiz creation route
 @auth_bp.route('/quizzes/create_new_quiz', methods=['GET', 'POST'])

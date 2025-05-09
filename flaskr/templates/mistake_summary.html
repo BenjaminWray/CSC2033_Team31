@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="w-100" style="max-width: 800px;">
+        <h2 class="text-center mb-4">📚 Quiz History</h2>
+
+        {% if history %}
+            {% for idx, item in enumerate(history) %}
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">{{ item.quiz_title }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Score:</strong> {{ item.score }} / {{ item.total }}</p>
+                        <p><strong>Completed at:</strong> {{ item.timestamp }}</p>
+
+                        <button class="btn btn-sm btn-outline-info mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#details{{ idx }}">
+                            View Details
+                        </button>
+
+                        <div class="collapse" id="details{{ idx }}">
+                            {% for result in item.results %}
+                                <div class="card mb-3 {% if result.is_correct %}border-success{% else %}border-danger{% endif %}">
+                                    <div class="card-body">
+                                        <p><strong>Q{{ loop.index }}:</strong> {{ result.question }}</p>
+                                        <p><strong>Your Answer:</strong> {{ result.selected }}</p>
+                                        {% if not result.is_correct %}
+                                            <p><strong>Correct Answer:</strong> {{ result.correct }}</p>
+                                            <p class="text-danger mb-0">❌ Incorrect</p>
+                                        {% else %}
+                                            <p class="text-success mb-0">✅ Correct</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-warning text-center">
+                No quiz history found.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
